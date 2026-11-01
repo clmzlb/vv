@@ -36,8 +36,11 @@ jobs:
         with:
           go-version: '1.25'
           cache-dependency-path: buildScript/snell-client/go.sum
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
         if: inputs.source_run == ''
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
       - name: Package independent Android executables
         if: inputs.source_run == ''
         env:
