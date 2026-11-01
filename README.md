@@ -3,7 +3,7 @@
 <img src="app/src/main/res/drawable-nodpi/arcaenbox_artwork.png" alt="ArcaenBox" width="128" />
 
 [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
-[![Releases](https://img.shields.io/github/v/release/Gavin-LHX/ArcaenBox)](https://github.com/Gavin-LHX/ArcaenBox/releases)
+[![Releases](https://img.shields.io/github/v/release/clmzlb/vv)](https://github.com/clmzlb/vv/releases)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 sing-box / universal proxy toolchain for Android.Forked from NekoBox.
@@ -16,17 +16,17 @@ The sidebar provides [Po0 Firewall Whitelist](docs/po0-whitelist.md), supporting
 
 ## 下载 / Downloads
 
-[![GitHub All Releases](https://img.shields.io/github/downloads/Gavin-LHX/ArcaenBox/total?label=downloads-total&logo=github&style=flat-square)](https://github.com/Gavin-LHX/ArcaenBox/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/clmzlb/vv/total?label=downloads-total&logo=github&style=flat-square)](https://github.com/clmzlb/vv/releases)
 
-[GitHub Releases 下载](https://github.com/Gavin-LHX/ArcaenBox/releases)
+[GitHub Releases 下载](https://github.com/clmzlb/vv/releases)
 
 ## 更新日志 / Changelog
 
-https://github.com/Gavin-LHX/ArcaenBox/releases
+https://github.com/clmzlb/vv/releases
 
 ## 项目主页 / Homepage
 
-https://github.com/Gavin-LHX/ArcaenBox
+https://github.com/clmzlb/vv
 
 ## 上游文档 / Upstream Documentation
 

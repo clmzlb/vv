@@ -63,7 +63,14 @@ jobs:
       - name: Gradle Build
         env:
           BUILD_PLUGIN: none
+          SIGNING_KEYSTORE: ${{ secrets.ARCAENBOX_KEYSTORE }}
+          KEYSTORE_PASS: ${{ secrets.ARCAENBOX_KEYSTORE_PASSWORD }}
+          ALIAS_PASS: ${{ secrets.ARCAENBOX_KEYSTORE_PASSWORD }}
+          ALIAS_NAME: arcaenbox
         run: |
+          set -euo pipefail
+          test -n "$SIGNING_KEYSTORE"
+          printf '%s' "$SIGNING_KEYSTORE" | base64 --decode > release.keystore
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           echo "ndk.dir=${ANDROID_HOME}/ndk/25.0.8775105" >> local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
@@ -125,7 +132,15 @@ jobs:
         run: |
           git submodule update --init 'app/*'
       - name: Gradle Build
+        env:
+          SIGNING_KEYSTORE: ${{ secrets.ARCAENBOX_KEYSTORE }}
+          KEYSTORE_PASS: ${{ secrets.ARCAENBOX_KEYSTORE_PASSWORD }}
+          ALIAS_PASS: ${{ secrets.ARCAENBOX_KEYSTORE_PASSWORD }}
+          ALIAS_NAME: arcaenbox
         run: |
+          set -euo pipefail
+          test -n "$SIGNING_KEYSTORE"
+          printf '%s' "$SIGNING_KEYSTORE" | base64 --decode > release.keystore
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           echo "ndk.dir=${ANDROID_HOME}/ndk/25.0.8775105" >> local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"

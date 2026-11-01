@@ -19,7 +19,7 @@ data class ReleaseAsset(val name: String, val url: String, val size: Long = 0)
 data class GithubRelease(val tag: String, val preview: Boolean, val url: String, val assets: List<ReleaseAsset>)
 
 object ReleaseService {
-    const val REPOSITORY = "Gavin-LHX/ArcaenBox"
+    const val REPOSITORY = "clmzlb/vv"
     const val DOWNLOAD_ROOT = "https://github.com/$REPOSITORY/releases/download/"
     private val direct = OkHttpClient.Builder().connectTimeout(12, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS).callTimeout(180, TimeUnit.SECONDS)

@@ -88,7 +88,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                 .subText(SagerNet.appVersionNameForDisplay)
                                 .setOnClickAction {
                                     requireContext().launchCustomTab(
-                                        "https://github.com/Gavin-LHX/ArcaenBox/releases"
+                                        "https://github.com/${ReleaseService.REPOSITORY}/releases"
                                     )
                                 }
                                 .build())
@@ -197,7 +197,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                 .text(R.string.github)
                                 .setOnClickAction {
                                     requireContext().launchCustomTab(
-                                        "https://github.com/Gavin-LHX/ArcaenBox"
+                                        "https://github.com/${ReleaseService.REPOSITORY}"
 
                                     )
                                 }

@@ -22,7 +22,7 @@ class ReleaseVersionTest {
         for (s in listOf("ArcaenBox v1.4.2","preview","core-stable-1.14.0-1","v1.4.2garbage","99999999999999999999.1.0")) assertNull(ReleaseVersion.parse(s))
     }
     @Test fun channelsIgnoreCoreReleasesAndDisplayOrder() {
-        fun r(tag: String, preview: Boolean, apk: Boolean=true) = GithubRelease(tag,preview,"https://github.com/Gavin-LHX/ArcaenBox/releases/tag/$tag",if(apk) listOf(ReleaseAsset("app.apk","")) else emptyList())
+        fun r(tag: String, preview: Boolean, apk: Boolean=true) = GithubRelease(tag,preview,"https://github.com/${ReleaseService.REPOSITORY}/releases/tag/$tag",if(apk) listOf(ReleaseAsset("app.apk","")) else emptyList())
         val releases=listOf(r("v1.4.2-arcaenbox.2",false),r("core-preview-1.15.0-1",true,false),r("v1.5.0-beta.1",true),r("v1.4.2-arcaenbox.6",false),r("v1.4.3",false,false))
         assertEquals("v1.4.2-arcaenbox.6",ReleaseService.applicationRelease(releases,false)?.tag)
         assertEquals("v1.5.0-beta.1",ReleaseService.applicationRelease(releases,true)?.tag)

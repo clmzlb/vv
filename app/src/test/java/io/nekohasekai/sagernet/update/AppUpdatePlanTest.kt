@@ -29,7 +29,7 @@ class AppUpdatePlanTest {
         rejects("app_abi") { AppUpdatePlan.apk(release(listOf(apk, apk)), "arm64-v8a") }
         rejects("app_invalid") { AppUpdatePlan.apk(release(listOf(apk.copy(size = 0))), "arm64-v8a") }
         rejects("app_invalid") { AppUpdatePlan.apk(release(listOf(apk.copy(size = AppUpdatePlan.MAX_APK_SIZE + 1))), "arm64-v8a") }
-        for (url in listOf("http://github.com/Gavin-LHX/ArcaenBox/releases/download/$tag/${apk.name}",
+        for (url in listOf("http://github.com/${ReleaseService.REPOSITORY}/releases/download/$tag/${apk.name}",
             apk.url.replace("github.com", "github.com.evil.example"), apk.url.replace(tag, "v1.7.1-arcaenbox.1"),
             apk.url + "?redirect=1")) {
             rejects("app_invalid") { AppUpdatePlan.apk(release(listOf(apk.copy(url = url))), "arm64-v8a") }
