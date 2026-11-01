@@ -111,12 +111,19 @@ def main():
     checkout = source / ('Xray-core-' + xray['commit'])
     entry = {k: xray[k] for k in ('name', 'version', 'library', 'source', 'license')}
     entry['sha256'] = {}
+    # Xray pulls in github.com/wlynxg/anet for its Android interface fix, and
+    # anet reaches net.zoneCache through //go:linkname. Go 1.23 turned that into
+    # a link error ("invalid reference to net.zoneCache"), which is what broke
+    # this build once the toolchain moved to go1.27.3; anet's own README calls
+    # for -checklinkname=0 alongside CGO builds. Scope it to Xray: the other
+    # components' dependency trees never linkname into the standard library.
+    xray_ldflags = '-s -w -checklinkname=0 -extldflags=-Wl,-z,max-page-size=16384'
     for abi, (arch, _, triple) in ABIS.items():
         output = target / abi / xray['library']
         env = {**os.environ, 'GOOS': 'android', 'GOARCH': arch, 'GOARM': '7', 'CGO_ENABLED': '1',
                'GOTOOLCHAIN': xray['toolchain'], 'CC': str(ndk / (triple + '21-clang'))}
         subprocess.run(['go', 'build', '-trimpath', '-buildmode=pie',
-                        '-ldflags=-s -w -extldflags=-Wl,-z,max-page-size=16384',
+                        '-ldflags=' + xray_ldflags,
                         '-o', str(output), './main'], cwd=checkout, env=env, check=True)
         data = output.read_bytes(); check_elf(data, abi); entry['sha256'][abi] = sha(data)
     manifest['components'].append(entry)
