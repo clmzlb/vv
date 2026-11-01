@@ -101,6 +101,19 @@ class FinalMaskTest {
         assertEquals("node.example", stream()["realitySettings"].asJsonObject["serverName"].asString)
     }
 
+    @Test fun tlsNeverEmitsRemovedAllowInsecure() {
+        val bean = parseV2Ray(link()).apply {
+            serverAddress = "node.example"; finalAddress = "127.0.0.1"; finalPort = 23456
+            security = "tls"; sni = "node.example"
+        }
+        fun tls() = JsonParser.parseString(bean.buildXrayFinalMaskConfig(34567)).asJsonObject["outbounds"]
+            .asJsonArray.single().asJsonObject["streamSettings"].asJsonObject["tlsSettings"].asJsonObject
+        // Xray 26.10 rejects "allowInsecure" as a removed feature.
+        assertFalse(tls().has("allowInsecure"))
+        bean.allowInsecure = true
+        assertThrows(IllegalArgumentException::class.java) { bean.buildXrayFinalMaskConfig(34567) }
+    }
+
     @Test fun rejectsUnsupportedMasksAndTransportsInsteadOfDowngrading() {
         val invalid = listOf("", "{}", "null", "[]", "not json", mask.replace("sudoku", "noise"),
             mask.replace("prefer_ascii", "invalid"), mask.replace("paddingMin\":0", "paddingMin\":4"),

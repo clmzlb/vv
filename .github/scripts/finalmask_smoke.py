@@ -21,8 +21,8 @@ def check(ui):
     out = p.OUT.resolve()
     archive = out / 'xray.zip'
     subprocess.run(['curl', '-fL', '--retry', '3', '--max-time', '180', '-o', str(archive),
-                    'https://github.com/XTLS/Xray-core/releases/download/v26.3.27/Xray-linux-64.zip'], check=True)
-    assert hashlib.sha256(archive.read_bytes()).hexdigest() == '23cd9af937744d97776ee35ecad4972cf4b2109d1e0fe6be9930467608f7c8ae'
+                    'https://github.com/XTLS/Xray-core/releases/download/v26.10.31/Xray-linux-64.zip'], check=True)
+    assert hashlib.sha256(archive.read_bytes()).hexdigest() == 'e4bd9119f50ae7c41658b1abd0679ae06f98bd864a2907ff33f2f2cf7081b214'
     with zipfile.ZipFile(archive) as z:
         (out / 'xray').write_bytes(z.read('xray'))
     (out / 'xray').chmod(0o700)
