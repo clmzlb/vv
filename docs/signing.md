@@ -20,6 +20,21 @@
 本地签名时把 keystore 放到仓库根的 `release.keystore`，并在 `local.properties`
 写入上述三个属性。`.signing/` 与 `*.keystore` 均已被 `.gitignore` 排除。
 
+## 离线备份
+
+轮换期间在仓库内临时使用过 `.signing/` 存放密钥材料，该目录已被 `.gitignore`
+排除，且已于 2026-11-02 从工作区删除。删除前的完整副本保存在
+`%USERPROFILE%\Desktop\vv-signing-backup-2026-11-01\`：
+
+| 文件 | SHA-256 |
+|---|---|
+| `release.keystore` | `7ca9738b0fe868f747f07f7d45f789d3f7458607472f96a76c6b47593b86e30a` |
+| `keystore.b64` | `dafe6b789e3010ab26e6c28086760d14f516c2f627ad4fd36d6d4ac4d859c9a7` |
+| `pub-new.der` | `e907fb38102c83c0a6091b534d6eb430e6b2b014f07a219d23cd78a56d67fd00` |
+
+`pub-new.der` 与仓库内 `public-key.der` 字节一致。该目录是明文私钥，
+应尽快迁移到密码管理器或加密卷，不要留在桌面、不要上传网盘或提交进仓库。
+
 ## 历史遗留
 
 2026-11-01 之前 `release.keystore` 曾被提交到公开仓库（第一个提交 `7d9798c`）。
