@@ -24,14 +24,14 @@ Trojan-Go 0.10.6: GPL-3.0
 https://github.com/p4gefau1t/trojan-go/tree/2dc60f52e79ff8b910e78e444f1e80678e936450
 Packaging source: https://github.com/SagerNet/SagerNet/tree/trojan-go-plugin-0.10.6
 
-Mieru 3.36.1: GPL-3.0
-https://github.com/enfein/mieru/tree/316cc6606c287d45a321b99ac86a1f2e7f2b785a
+Mieru 3.39.0: GPL-3.0
+https://github.com/enfein/mieru/tree/bcd14b88d0fb7e7707bb80e5d7f6c33675d26c06
 
-mihomo 1.19.30 (Snell): GPL-3.0
-https://github.com/MetaCubeX/mihomo/tree/v1.19.30
+mihomo 1.19.33 (Snell): GPL-3.0
+https://github.com/MetaCubeX/mihomo/tree/v1.19.33
 
-NaiveProxy 150.0.7871.63-1
-https://github.com/klzgrad/naiveproxy/tree/v150.0.7871.63-1
+NaiveProxy 154.0.8037.49-5
+https://github.com/klzgrad/naiveproxy/tree/v154.0.8037.49-5
 
 // Copyright 2015 The Chromium Authors. All rights reserved.
 //

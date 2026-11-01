@@ -19,9 +19,9 @@ Snell 正式渠道使用 mihomo 的实现。其 v5 选项通过服务端的 v4 �
 | 组件 | 版本 | 对应源码与许可 |
 | --- | --- | --- |
 | Trojan-Go | 0.10.6 | [源码提交](https://github.com/p4gefau1t/trojan-go/tree/2dc60f52e79ff8b910e78e444f1e80678e936450)，GPL-3.0；[SagerNet 打包源码](https://github.com/SagerNet/SagerNet/tree/trojan-go-plugin-0.10.6/plugin/trojan-go) |
-| NaïveProxy | 150.0.7871.63-1 | [源码与构建工作流](https://github.com/klzgrad/naiveproxy/tree/v150.0.7871.63-1)，BSD-3-Clause 与 Chromium 第三方许可 |
-| Mieru | 3.36.1 | [源码提交](https://github.com/enfein/mieru/tree/316cc6606c287d45a321b99ac86a1f2e7f2b785a)，GPL-3.0 |
-| mihomo（Snell） | 1.19.30 | [源码与构建工作流](https://github.com/MetaCubeX/mihomo/tree/v1.19.30)，GPL-3.0 |
+| NaïveProxy | 154.0.8037.49-5 | [源码与构建工作流](https://github.com/klzgrad/naiveproxy/tree/v154.0.8037.49-5)，BSD-3-Clause 与 Chromium 第三方许可 |
+| Mieru | 3.39.0 | [源码提交](https://github.com/enfein/mieru/tree/bcd14b88d0fb7e7707bb80e5d7f6c33675d26c06)，GPL-3.0 |
+| mihomo（Snell） | 1.19.33 | [源码与构建工作流](https://github.com/MetaCubeX/mihomo/tree/v1.19.33)，GPL-3.0 |
 | sing-snell（Snell 测试渠道） | bc5a12ac736f / adapter 1 | [锁定的源码提交](https://github.com/SagerNet/sing-snell/tree/bc5a12ac736f235b2de2926ecd2791cc925e6b8c)，GPL-3.0-or-later；本项目适配器位于 `buildScript/snell-client` |
 
 Mieru 和 Snell 测试渠道使用锁定源码在 CI 中通过 Go 和 Android NDK 编译四种架构。其余客户端提取自表中版本的官方 Android 发布物。重建需要 Android SDK、NDK 25.0.8775105、Go 1.25、Python 3.12+ 和 curl：

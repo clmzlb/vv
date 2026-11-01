@@ -8,9 +8,9 @@ Existing version-zero Mieru profiles remain readable. Their previously absent mu
 
 This importer supports one server port and protocol per node. Multiple bindings, port ranges and `traffic-pattern` are rejected rather than silently discarded. The protobuf-based `mieru://` format is different and is not an alias for `mierus://`.
 
-References for the pinned Mieru 3.36.1 core:
+References for the pinned Mieru 3.39.0 core:
 
-- [Official simple-link implementation](https://github.com/enfein/mieru/blob/v3.36.1/pkg/appctl/url.go)
-- [Core profile validation](https://github.com/enfein/mieru/blob/v3.36.1/pkg/appctl/appctlcommon/client.go)
+- [Official simple-link implementation](https://github.com/enfein/mieru/blob/v3.39.0/pkg/appctl/url.go)
+- [Core profile validation](https://github.com/enfein/mieru/blob/v3.39.0/pkg/appctl/appctlcommon/client.go)
 
 Regression fixtures use synthetic credentials and documentation-only addresses. They cover query-port import, shared parser dispatch, IPv6 and percent encoding, all stored options, legacy TCP/UDP records, generated core configuration and invalid input. No user-provided credentials belong in tests or release artifacts.

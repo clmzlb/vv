@@ -2,51 +2,51 @@
   "components": [
     {
       "name": "NaiveProxy",
-      "version": "v150.0.7871.63-1",
+      "version": "v154.0.8037.49-5",
       "library": "libnaive.so",
-      "source": "https://github.com/klzgrad/naiveproxy/releases/tag/v150.0.7871.63-1",
+      "source": "https://github.com/klzgrad/naiveproxy/releases/tag/v154.0.8037.49-5",
       "license": "BSD-3-Clause and Chromium third-party licenses",
       "assets": {
         "arm64-v8a": {
-          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v150.0.7871.63-1/naiveproxy-plugin-v150.0.7871.63-1-arm64-v8a.apk",
-          "sha256": "733fbbbebb383a91f42036992c21cfd19b99e089ac3d15d7c077df79fc471a89"
+          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v154.0.8037.49-5/naiveproxy-plugin-v154.0.8037.49-5-arm64-v8a.apk",
+          "sha256": "3a532e6894d87c1fca5c527d3598892627829c76cb5b75ed831555f384841bd0"
         },
         "armeabi-v7a": {
-          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v150.0.7871.63-1/naiveproxy-plugin-v150.0.7871.63-1-armeabi-v7a.apk",
-          "sha256": "d52b01d0a55cd0807fe196e72abd5aa4859a783798b1bc1b3cf1bfa9ad8f7ae4"
+          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v154.0.8037.49-5/naiveproxy-plugin-v154.0.8037.49-5-armeabi-v7a.apk",
+          "sha256": "9acbf08afea2d35aad492d5312444b6aecd5fafa41f29d794d4821549f330da5"
         },
         "x86": {
-          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v150.0.7871.63-1/naiveproxy-plugin-v150.0.7871.63-1-x86.apk",
-          "sha256": "101d8e52c7473005b8ad072b7d446db624c76ba77ccce116564fadcc2cd4e0d7"
+          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v154.0.8037.49-5/naiveproxy-plugin-v154.0.8037.49-5-x86.apk",
+          "sha256": "82742a51d671778d264fefccd6834d40da94755f2eefb96a494fd2dc5b75fb61"
         },
         "x86_64": {
-          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v150.0.7871.63-1/naiveproxy-plugin-v150.0.7871.63-1-x86_64.apk",
-          "sha256": "a6800d30bb70798d7b9ad3d0218469c58776c250b462926a7cc2e7795d915f78"
+          "url": "https://github.com/klzgrad/naiveproxy/releases/download/v154.0.8037.49-5/naiveproxy-plugin-v154.0.8037.49-5-x86_64.apk",
+          "sha256": "af3e8070e882f0008b6511394ae4d3737ece508e9b34abee94cb2f59ddb5e940"
         }
       }
     },
     {
       "name": "Snell (mihomo)",
-      "version": "v1.19.30",
+      "version": "v1.19.33",
       "library": "libmihomo.so",
-      "source": "https://github.com/MetaCubeX/mihomo/releases/tag/v1.19.30",
+      "source": "https://github.com/MetaCubeX/mihomo/releases/tag/v1.19.33",
       "license": "GPL-3.0",
       "assets": {
         "arm64-v8a": {
-          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.30/mihomo-android-arm64-v8-v1.19.30.gz",
-          "sha256": "19afeb40fca190fc2e3906a4e3b87c74a0c2120626fd3cb3ae0cf4092cb780ad"
+          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.33/mihomo-android-arm64-v8-v1.19.33.gz",
+          "sha256": "2ddbd3aaa884f52b4568f406876ec81dddeef9f1bb67b90d4004d356e2c6a708"
         },
         "armeabi-v7a": {
-          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.30/mihomo-android-armv7-v1.19.30.gz",
-          "sha256": "cfdd1fee92408da09666aa3845fbf73727359b72b6eb4bf69785a21bddb28ec1"
+          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.33/mihomo-android-armv7-v1.19.33.gz",
+          "sha256": "ffca395177c6e25bf5f4e5dfa939bf9b443cf77369f6e0eec132024d1e459ce1"
         },
         "x86": {
-          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.30/mihomo-android-386-v1.19.30.gz",
-          "sha256": "4fc9a2fa45f93d4bb1ae055157c67ba401890a80f23d60fa2d2b542b774fdfca"
+          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.33/mihomo-android-386-v1.19.33.gz",
+          "sha256": "9f0a0a02bd6c9895575f696308bbcbdea3e48af8199e57730e95264254c91ce5"
         },
         "x86_64": {
-          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.30/mihomo-android-amd64-v1.19.30.gz",
-          "sha256": "33aa898cb17b442531abbb9f7567e0e4a8e0542ee2f72f042b1a805f0b6ab1fe"
+          "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.33/mihomo-android-amd64-v1.19.33.gz",
+          "sha256": "14181cdc0c1e77d7a751ea851a93c2c086557af5cd69433004c9644f04eb9249"
         }
       }
     },
@@ -78,13 +78,13 @@
   ],
   "mieru": {
     "name": "Mieru",
-    "version": "3.36.1",
+    "version": "3.39.0",
     "library": "libmieru.so",
-    "source": "https://github.com/enfein/mieru/tree/316cc6606c287d45a321b99ac86a1f2e7f2b785a",
+    "source": "https://github.com/enfein/mieru/tree/bcd14b88d0fb7e7707bb80e5d7f6c33675d26c06",
     "license": "GPL-3.0",
-    "commit": "316cc6606c287d45a321b99ac86a1f2e7f2b785a",
-    "url": "https://github.com/enfein/mieru/archive/316cc6606c287d45a321b99ac86a1f2e7f2b785a.tar.gz",
-    "sha256": "5b64fbd839b45e1adf1116d8b1c24e56c89e33a4dea12138e2e0c01670750b2c"
+    "commit": "bcd14b88d0fb7e7707bb80e5d7f6c33675d26c06",
+    "url": "https://github.com/enfein/mieru/archive/bcd14b88d0fb7e7707bb80e5d7f6c33675d26c06.tar.gz",
+    "sha256": "8853a026abf90b35036e3bc3ebf441d6123ee7e94ce490a64165342805416db7"
   },
   "xray": {
     "name": "Xray",
@@ -106,10 +106,10 @@
   },
   "revisions": {
     "trojan-go:stable": 1,
-    "naive:stable": 1,
-    "mieru:stable": 1,
+    "naive:stable": 2,
+    "mieru:stable": 2,
     "xray:stable": 2,
-    "snell:stable": 1,
+    "snell:stable": 2,
     "snell:preview": 1
   }
 }

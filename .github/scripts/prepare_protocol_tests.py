@@ -16,8 +16,8 @@ SERVERS = [
      '9bea1c2b9e35b73b31634856c04d18c393072b9e5dcde6a32781d8b8f908c539', 'snell-server'),
     ('trojan-go', 'https://github.com/p4gefau1t/trojan-go/releases/download/v0.10.6/trojan-go-linux-amd64.zip',
      '764480722783a6d76ed8401f6d2f1d87d8df7e60bf261f69c67eb94b77e732af', 'trojan-go'),
-    ('mita', 'https://github.com/enfein/mieru/releases/download/v3.36.1/mita_3.36.1_linux_amd64.tar.gz',
-     '8e6ae525bbcaa688a8446aebf3c2ecbcb4ce606838d23edfa3f7f2fad506a8f7', 'mita'),
+    ('mita', 'https://github.com/enfein/mieru/releases/download/v3.39.0/mita_3.39.0_linux_amd64.tar.gz',
+     'ea35fdef84bef1378f32b74a2d5a883d508a49dd4e64dba9a3a8363beed5798c', 'mita'),
     ('caddy', 'https://github.com/klzgrad/forwardproxy/releases/download/v2.11.2-naive/caddy-forwardproxy-naive.tar.xz',
      '19eccb7321dd877a5fb4a3dba6ef1b745185188b616c96cc6201f1a1fc0380a8', 'caddy-forwardproxy-naive/caddy'),
 ]
