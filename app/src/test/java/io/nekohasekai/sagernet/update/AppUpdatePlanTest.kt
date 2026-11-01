@@ -48,8 +48,8 @@ class AppUpdatePlanTest {
     }
 
     @Test fun requiresSamePackageNewerCodeReleaseNameAndCurrentSigners() {
-        fun verify(pkg: String = "com.arcaenbox.android", code: Long = 296, name: String? = "1.7.2-arcaenbox.1", signers: Set<String> = setOf("current")) =
-            AppUpdatePlan.verifyIdentity("com.arcaenbox.android", 292, setOf("current"), pkg, code, name, signers, tag)
+        fun verify(pkg: String = "com.vv.android", code: Long = 296, name: String? = "1.7.2-arcaenbox.1", signers: Set<String> = setOf("current")) =
+            AppUpdatePlan.verifyIdentity("com.vv.android", 292, setOf("current"), pkg, code, name, signers, tag)
         verify()
         rejects("app_package") { verify(pkg = "other.app") }
         rejects("app_version") { verify(code = 292) }

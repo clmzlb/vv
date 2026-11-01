@@ -114,15 +114,15 @@ jobs:
             "$ANDROID_HOME/build-tools/35.0.1/apksigner" verify --verbose "$apk"
             "$ANDROID_HOME/build-tools/35.0.1/aapt" dump badging "$apk" | tee /tmp/apk-badging.txt
             grep -q "application-label:'ArcaenBox'" /tmp/apk-badging.txt
-            grep -q "package: name='com.arcaenbox.android'" /tmp/apk-badging.txt
+            grep -q "package: name='com.vv.android'" /tmp/apk-badging.txt
             "$ANDROID_HOME/build-tools/35.0.1/aapt" dump xmltree "$apk" AndroidManifest.xml > /tmp/apk-manifest.txt
             "$ANDROID_HOME/build-tools/35.0.1/aapt" dump --values resources "$apk" > /tmp/apk-resources.txt
             shortcuts_path=$(awk '/^[[:space:]]*resource .*:xml\/shortcuts:/ { found=1; next } found && /\(string(8|16)\)/ { split($0, parts, "\""); print parts[2]; exit }' /tmp/apk-resources.txt)
             test -n "$shortcuts_path"
             "$ANDROID_HOME/build-tools/35.0.1/aapt" dump xmltree "$apk" "$shortcuts_path" > /tmp/apk-shortcuts.txt
-            grep -q 'com.arcaenbox.android.SERVICE' /tmp/apk-manifest.txt
-            grep -q 'com.arcaenbox.android.cache' /tmp/apk-manifest.txt
-            test "$(grep -c 'targetPackage.*com.arcaenbox.android' /tmp/apk-shortcuts.txt)" -eq 4
+            grep -q 'com.vv.android.SERVICE' /tmp/apk-manifest.txt
+            grep -q 'com.vv.android.cache' /tmp/apk-manifest.txt
+            test "$(grep -c 'targetPackage.*com.vv.android' /tmp/apk-shortcuts.txt)" -eq 4
             if grep -F 'moe.nb4a' /tmp/apk-manifest.txt /tmp/apk-shortcuts.txt; then
               echo 'Old application ID remains in compiled resources'
               exit 1
@@ -211,5 +211,19 @@ jobs:
           RELEASE_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
-          printf '%s\n' 'ArcaenBox for Android. Default primary color: #DCEEF1.' 'Package: com.arcaenbox.android. Can be installed alongside the old moe.nb4a application; export and import configuration to migrate.' 'Signed release APKs for arm64-v8a, armeabi-v7a, x86, and x86_64.' 'This build uses the existing dedicated ArcaenBox signing key.' > /tmp/release-notes.md
+          cat > /tmp/release-notes.md <<'EOF'
+          ArcaenBox for Android. Default primary color: #DCEEF1.
+
+          Package: `com.vv.android`.
+
+          **This release uses a new signing key.** Android cannot replace an
+          installation signed by a different key, so upgrading from
+          `com.arcaenbox.android` requires uninstalling the old app first.
+          Export your configuration before uninstalling: the uninstall removes
+          profiles, rules and settings. The two packages have different
+          application IDs and can coexist, which is the safer way to migrate.
+
+          Signed release APKs for arm64-v8a, armeabi-v7a, x86, and x86_64.
+          EOF
+          sed -i 's/^ \{10\}//' /tmp/release-notes.md
           gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "ArcaenBox $RELEASE_TAG" --notes-file /tmp/release-notes.md

@@ -9,7 +9,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-PACKAGE = 'com.arcaenbox.android'
+PACKAGE = 'com.vv.android'
 OUT = Path('ui-smoke')
 OUT.mkdir(exist_ok=True)
 STRINGS = {e.get('name'): ''.join(e.itertext()) for e in ET.parse('app/src/main/res/values/strings.xml').getroot() if e.tag == 'string'}

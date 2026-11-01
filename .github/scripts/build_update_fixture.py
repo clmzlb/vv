@@ -30,7 +30,7 @@ try:
     sdk = Path(os.environ['ANDROID_HOME']) / 'build-tools/35.0.1'
     subprocess.run([str(sdk / 'apksigner'), 'verify', '--verbose', str(target)], check=True)
     badging = subprocess.check_output([str(sdk / 'aapt'), 'dump', 'badging', str(target)], text=True)
-    assert "package: name='com.arcaenbox.android' versionCode='5' versionName='0.0.0-arcaenbox.1'" in badging
+    assert "package: name='com.vv.android' versionCode='5' versionName='0.0.0-arcaenbox.1'" in badging
     (destination / 'provenance.json').write_text(json.dumps({
         'source_commit': os.environ['GITHUB_SHA'],
         'purpose': 'Isolated in-app download and system-installer verification; never publish',

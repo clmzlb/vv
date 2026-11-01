@@ -16,6 +16,11 @@ jniLibs/
 .idea/deploymentTargetDropDown.xml
 /nkmr
 
+# signing material is supplied through CI secrets, never committed
+*.keystore
+*.jks
+release.keystore
+
 # submodules
 /external
 /.signing/
