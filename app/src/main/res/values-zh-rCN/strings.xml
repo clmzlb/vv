@@ -193,6 +193,8 @@
     <string name="tcp_header_type">TCP 头部伪装</string>
     <string name="xhttp_mode">XHTTP 模式</string>
     <string name="xhttp_extra">XHTTP extra（JSON）</string>
+    <string name="xhttp_host">XHTTP 主机</string>
+    <string name="xhttp_path">XHTTP 路径</string>
     <string name="spider_x">SpiderX</string>
     <string name="mldsa65_verify">ML-DSA-65 验证</string>
     <string name="xray_backend_summary">由内置 Xray 内核运行</string>

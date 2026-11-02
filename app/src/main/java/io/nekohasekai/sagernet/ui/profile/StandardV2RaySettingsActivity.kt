@@ -234,8 +234,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             }
 
             "xhttp" -> {
-                host.preference.setTitle(R.string.ws_host)
-                path.preference.setTitle(R.string.ws_path)
+                host.preference.setTitle(R.string.xhttp_host)
+                path.preference.setTitle(R.string.xhttp_path)
                 host.preference.isVisible = true
                 path.preference.isVisible = true
                 xhttpMode.preference.isVisible = true

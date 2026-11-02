@@ -525,6 +525,8 @@
     <string name="tcp_header_type">TCP header type</string>
     <string name="xhttp_mode">XHTTP mode</string>
     <string name="xhttp_extra">XHTTP extra (JSON)</string>
+    <string name="xhttp_host">XHTTP Host</string>
+    <string name="xhttp_path">XHTTP Path</string>
     <string name="spider_x">SpiderX</string>
     <string name="mldsa65_verify">ML-DSA-65 verify</string>
     <string name="xray_backend_summary">Runs on the bundled Xray core</string>
