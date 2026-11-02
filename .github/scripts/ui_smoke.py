@@ -616,6 +616,13 @@ def vless_import():
     assert 'unable to resolve' not in result.lower(), 'VLESS intent not registered'
     tap(wait_for(resource_id='android:id/button1'))
     wait_for(text='VLESS-link-fixture');capture('vless-system-link-import')
+    # The editor binds every VLESS option by key, so opening it catches a
+    # preference that exists in the bean but not in the layout.
+    tap(wait_for(resource_id=PACKAGE + ':id/node_actions'))
+    tap(wait_for(text=STRINGS['edit']))
+    wait_for(text=STRINGS['server_address'])
+    capture('vless-profile-editor')
+    adb('shell','input','keyevent','BACK')
 
 
 def run_check(name, check):
