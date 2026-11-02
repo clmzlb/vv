@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="vpn_permission_help">Android 未授予 VPN 授权。如果 NekoBox 等其他应用启用了“始终开启 VPN”，请先到系统 VPN 设置中关闭该选项，再返回点击连接。若手机另有“创建 VPN 连接”权限，也请在应用权限中允许 ArcaenBox。受管理设备的限制需由管理员调整。</string>
+    <string name="vpn_permission_help">Android 未授予 VPN 授权。如果 NekoBox 等其他应用启用了“始终开启 VPN”，请先到系统 VPN 设置中关闭该选项，再返回点击连接。若手机另有“创建 VPN 连接”权限，也请在应用权限中允许 Vbox。受管理设备的限制需由管理员调整。</string>
     <string name="system_vpn_settings">系统 VPN 设置</string>
     <string name="app_permission_settings">应用权限设置</string>
     <string name="vpn_establish_failed">Android 未能创建 VPN 接口，请在系统 VPN 设置中检查授权、其他应用的“始终开启 VPN”及设备限制。</string>

@@ -11,8 +11,8 @@
     <string name="core_download">Download core update</string>
     <string name="core_switch">Apply and restart</string>
     <string name="core_restore">Restore built-in core</string>
-    <string name="core_restart_title">Restart ArcaenBox?</string>
-    <string name="core_restart_message">The proxy will stop. ArcaenBox will restart with %1$s. Your profiles and settings will be kept.</string>
+    <string name="core_restart_title">Restart Vbox?</string>
+    <string name="core_restart_message">The proxy will stop. Vbox will restart with %1$s. Your profiles and settings will be kept.</string>
     <string name="core_ready">Core verified and saved. Apply and restart to use it.</string>
     <string name="core_latest">No newer compatible core is available for this channel.</string>
     <string name="core_available">Available: %1$s</string>
@@ -29,7 +29,7 @@
     <string name="update_invalid">The update data is invalid. No changes were applied.</string>
     <string name="update_signature">Core signature verification failed. The download was rejected.</string>
     <string name="update_checksum">The core download is incomplete or damaged. Please download it again.</string>
-    <string name="update_incompatible">This core requires a newer ArcaenBox app. Update the app first.</string>
+    <string name="update_incompatible">This core requires a newer Vbox app. Update the app first.</string>
     <string name="update_storage">Could not save the core. Check available storage and try again.</string>
     <string name="update_stop_failed">The proxy has not stopped yet. Stop it and try again.</string>
     <string name="update_downloading">Downloading: %1$d%%</string>

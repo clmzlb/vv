@@ -514,7 +514,7 @@
     <string name="po0_tokens">机器 Token</string>
     <string name="po0_token_help">从 Po0 控制台的防火墙「复制添加脚本」中取出 pgnfw_ 开头的 Token，多台机器用逗号分隔。仅在本机加密保存，不随备份导出。</string>
     <string name="po0_automatic">自动加白</string>
-    <string name="po0_automatic_help">ArcaenBox 运行时切换网络立即更新，并约每 15 分钟后台补查。系统省电限制可能延迟后台任务。VPN 连接时也通过手机实际网络直连加白。</string>
+    <string name="po0_automatic_help">Vbox 运行时切换网络立即更新，并约每 15 分钟后台补查。系统省电限制可能延迟后台任务。VPN 连接时也通过手机实际网络直连加白。</string>
     <string name="po0_save">保存设置</string>
     <string name="po0_add">保存并立即加白</string>
     <string name="po0_saved">白名单设置已保存</string>

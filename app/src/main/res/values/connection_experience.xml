@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="vpn_permission_help">Android did not grant VPN authorization. If another app is set to Always-on VPN, turn that option off in System VPN settings, then return and tap Connect. On phones with a separate Create VPN connections permission, allow ArcaenBox in App permissions too. A managed-device restriction must be changed by its administrator.</string>
+    <string name="vpn_permission_help">Android did not grant VPN authorization. If another app is set to Always-on VPN, turn that option off in System VPN settings, then return and tap Connect. On phones with a separate Create VPN connections permission, allow Vbox in App permissions too. A managed-device restriction must be changed by its administrator.</string>
     <string name="system_vpn_settings">System VPN settings</string>
     <string name="app_permission_settings">App permissions</string>
     <string name="vpn_establish_failed">Android could not create the VPN interface. Check VPN authorization, another app’s Always-on VPN, and device restrictions in System VPN settings.</string>

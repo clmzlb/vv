@@ -5,11 +5,17 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Themed icons take the silhouette only; the system supplies the colour. -->
+    <!-- Themed icons take the silhouette only; the system supplies the colour.
+         Same V-in-a-box outline as drawable/ic_launcher_foreground.xml. -->
     <path
-        android:pathData="M36.5,37 L54,74 L71.5,37"
+        android:fillColor="#00000000"
+        android:pathData="M41,26 L67,26 A15,15 0 0 1 82,41 L82,67 A15,15 0 0 1 67,82 L41,82 A15,15 0 0 1 26,67 L26,41 A15,15 0 0 1 41,26 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5" />
+    <path
+        android:pathData="M40,40 L54,70 L68,40"
         android:strokeColor="#FFFFFF"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:strokeWidth="13" />
+        android:strokeWidth="9" />
 </vector>

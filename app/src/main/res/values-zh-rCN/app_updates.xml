@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_update_title">更新 ArcaenBox</string>
+    <string name="app_update_title">更新 Vbox</string>
     <string name="app_update_available">当前版本：%1$s\n新版本：%2$s\n\n将在应用内下载并校验更新，再由 Android 确认安装。</string>
     <string name="app_update_download">下载更新</string>
     <string name="app_update_install">安装</string>
@@ -8,7 +8,7 @@
     <string name="app_update_preparing">正在准备适配的更新…</string>
     <string name="app_update_downloading">正在下载… %1$d%%</string>
     <string name="app_update_verifying">正在校验文件和应用签名…</string>
-    <string name="app_update_ready">%1$s · %2$s\n\n已通过校验，可以安装。首次安装可能需要在 Android 设置中允许 ArcaenBox 安装应用。</string>
+    <string name="app_update_ready">%1$s · %2$s\n\n已通过校验，可以安装。首次安装可能需要在 Android 设置中允许 Vbox 安装应用。</string>
     <string name="app_update_permission_denied">尚未允许安装应用。点击“安装”可打开 Android 设置并重试。</string>
     <string name="app_update_install_returned">安装尚未完成，可以再次点击“安装”重试。</string>
     <string name="app_update_installer_missing">无法打开 Android 安装器或安装权限设置，请点击“安装”重试。</string>

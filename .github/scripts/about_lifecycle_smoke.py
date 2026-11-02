@@ -84,7 +84,7 @@ def crash_export(ui):
     assert len(created) == 1, created
     path = created.pop()
     name = path.rsplit('/', 1)[-1]
-    assert name.startswith('ArcaenBox Crash ') and name.endswith('.log'), name
+    assert name.startswith('Vbox Crash ') and name.endswith('.log'), name
     # Do not publish the diagnostic content; only retain the branded header/name.
     import shlex
     while True:
@@ -93,7 +93,7 @@ def crash_export(ui):
             break
         assert time.monotonic() < deadline, 'Crash log header was not written'
         time.sleep(.3)
-    assert header.startswith('ArcaenBox for Android '), header
+    assert header.startswith('Vbox for Android '), header
     (ui.OUT/'crash-export-results.json').write_text(json.dumps({
         'intentional_crash': True, 'filename': name, 'header': header,
         'share_sent': False,

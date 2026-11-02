@@ -321,7 +321,7 @@ def route_import():
     ui.tap(ui.wait_for(text=ui.STRINGS['route_export']))
     ui.tap(ui.wait_for(resource_id='android:id/button1'))
     ui.wait_for(resource_id=P+':id/route_help')
-    exported=json.loads(ui.adb('shell','cat','/sdcard/Download/ArcaenBox-routes.json'))
+    exported=json.loads(ui.adb('shell','cat','/sdcard/Download/Vbox-routes.json'))
     assert exported['format']=='arcaenbox-route-rules' and len(exported['rules'])==len(after)
     assert exported['rules'][-3]['outbound']=='direct' and exported['rules'][-2]['outbound']=='block'
     (ui.OUT/'routing-import-result.json').write_text(json.dumps({'before':before,'after':after,'export':exported},indent=2))

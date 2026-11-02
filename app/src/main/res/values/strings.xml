@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">ArcaenBox</string>
-    <string name="app_name_long" translatable="false">ArcaenBox for Android</string>
+    <string name="app_name" translatable="false">Vbox</string>
+    <string name="app_name_long" translatable="false">Vbox for Android</string>
     <string name="app_desc">The universal proxy toolchain for Android, written in Kotlin.</string>
     <string name="project">Project</string>
     <string name="github">Source code</string>
@@ -594,7 +594,7 @@
     <string name="po0_tokens">Machine tokens</string>
     <string name="po0_token_help">Copy the pgnfw_ token from the firewall add script in the Po0 console. Separate machines with commas. Stored encrypted on this device; excluded from backups.</string>
     <string name="po0_automatic">Automatic whitelisting</string>
-    <string name="po0_automatic_help">Update on network changes while ArcaenBox is running, with a background check about every 15 minutes. Android battery restrictions may delay background checks. Requests use the underlying network directly, including while the VPN is connected.</string>
+    <string name="po0_automatic_help">Update on network changes while Vbox is running, with a background check about every 15 minutes. Android battery restrictions may delay background checks. Requests use the underlying network directly, including while the VPN is connected.</string>
     <string name="po0_save">Save settings</string>
     <string name="po0_add">Save and whitelist now</string>
     <string name="po0_saved">Whitelist settings saved</string>

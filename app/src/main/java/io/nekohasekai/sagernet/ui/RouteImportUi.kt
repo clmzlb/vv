@@ -65,7 +65,7 @@ class RouteImportUi(private val fragment: Fragment, private val changed: () -> U
             } }.show()
     }
 
-    fun export() = export.launch("ArcaenBox-routes.json")
+    fun export() = export.launch("Vbox-routes.json")
 
     private fun url() {
         val edit = EditText(fragment.requireContext()).apply { hint = "https://"; inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_URI }

@@ -11,8 +11,8 @@
     <string name="core_download">下载内核更新</string>
     <string name="core_switch">应用并重启</string>
     <string name="core_restore">恢复内置内核</string>
-    <string name="core_restart_title">重启 ArcaenBox？</string>
-    <string name="core_restart_message">代理将停止，ArcaenBox 将使用 %1$s 重启。节点和设置会保留。</string>
+    <string name="core_restart_title">重启 Vbox？</string>
+    <string name="core_restart_message">代理将停止，Vbox 将使用 %1$s 重启。节点和设置会保留。</string>
     <string name="core_ready">内核已校验并保存，点击“应用并重启”后生效。</string>
     <string name="core_latest">此渠道暂无更新的兼容内核。</string>
     <string name="core_available">发现内核：%1$s</string>
@@ -29,7 +29,7 @@
     <string name="update_invalid">更新数据无效，未应用任何更改。</string>
     <string name="update_signature">内核签名校验失败，已拒绝该下载。</string>
     <string name="update_checksum">内核下载不完整或已损坏，请重新下载。</string>
-    <string name="update_incompatible">此内核需要新版 ArcaenBox，请先更新应用。</string>
+    <string name="update_incompatible">此内核需要新版 Vbox，请先更新应用。</string>
     <string name="update_storage">无法保存内核，请检查剩余存储空间后重试。</string>
     <string name="update_stop_failed">代理尚未停止，请停止代理后重试。</string>
     <string name="update_downloading">正在下载：%1$d%%</string>

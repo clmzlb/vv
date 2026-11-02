@@ -318,7 +318,7 @@ def launcher_icon():
     width,height=map(int,re.findall(r'(\d+)x(\d+)',dimensions)[-1])
     adb('shell','input','swipe',str(width//2),str(3*height//4),str(width//2),str(height//4),'500')
     time.sleep(1)
-    wait_for(text='ArcaenBox')
+    wait_for(text='Vbox')
     (OUT/'18-launcher-icon.png').write_bytes(adb('exec-out','screencap','-p',binary=True))
     (OUT/'18-launcher-icon.xml').write_text(ET.tostring(tree(),encoding='unicode'),encoding='utf-8')
     RESULTS.append('18-launcher-icon')
