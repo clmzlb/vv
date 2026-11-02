@@ -192,8 +192,9 @@ class VlessOptionsTest {
 
     @Test
     fun visionCannotBeMultiplexed() {
+        // mldsa65Verify forces the Xray backend, where Xray itself refuses mux + Vision.
         val bean = parse(
-            "type=tcp&security=reality&sni=example.com&pbk=pub&sid=00&spx=%2Fprobe" +
+            "type=tcp&security=reality&sni=example.com&pbk=pub&sid=00&mldsa65Verify=deadbeef" +
                 "&flow=xtls-rprx-vision"
         ).apply { enableMux = true }
         val error = assertThrows(IllegalArgumentException::class.java) {
