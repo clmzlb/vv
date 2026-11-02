@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Right arm is painted first; the white left arm closes over the joint, so the
+         monogram reads as one folded stroke instead of two overlapping lines.
+         The API 21-25 bitmaps in mipmap-*/ic_launcher.png mirror this geometry;
+         regenerate them with buildScript/tools/gen_launcher_icon.py after edits. -->
+    <path
+        android:pathData="M54,74 L71.5,37"
+        android:strokeColor="#C6E2E8"
+        android:strokeLineCap="round"
+        android:strokeWidth="13" />
+    <path
+        android:pathData="M36.5,37 L54,74"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="13" />
+</vector>
