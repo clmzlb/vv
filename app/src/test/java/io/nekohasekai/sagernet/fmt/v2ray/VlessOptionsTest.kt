@@ -176,6 +176,33 @@ class VlessOptionsTest {
     }
 
     @Test
+    fun xrayBackendCarriesMuxAndIgnoresPacketEncoding() {
+        val bean = parse("type=xhttp&security=tls&sni=example.com&path=%2F&mode=auto").apply {
+            enableMux = true
+            muxConcurrency = 8
+            packetEncoding = 2
+        }
+        bean.validateVlessOptions()
+        val outbound = JsonParser.parseString(prepare(bean).buildXrayVlessConfig(10000))
+            .asJsonObject["outbounds"].asJsonArray.single().asJsonObject
+        val mux = outbound["mux"].asJsonObject
+        assertTrue(mux["enabled"].asBoolean)
+        assertEquals(8, mux["concurrency"].asInt)
+    }
+
+    @Test
+    fun visionCannotBeMultiplexed() {
+        val bean = parse(
+            "type=tcp&security=reality&sni=example.com&pbk=pub&sid=00&spx=%2Fprobe" +
+                "&flow=xtls-rprx-vision"
+        ).apply { enableMux = true }
+        val error = assertThrows(IllegalArgumentException::class.java) {
+            bean.validateVlessOptions()
+        }
+        assertTrue(error.message!!.contains("Vision"))
+    }
+
+    @Test
     fun ordinaryVlessHasNoXrayOnlyDefaults() {
         val bean = parse("type=ws&security=tls&sni=example.com&path=%2Fws")
         assertEquals("", bean.vlessEncryption)

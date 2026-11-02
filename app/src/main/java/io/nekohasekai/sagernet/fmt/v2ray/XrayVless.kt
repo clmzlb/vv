@@ -37,10 +37,11 @@ fun StandardV2RayBean.validateVlessOptions() {
 
     require(isVLESS) { "The bundled Xray only runs VLESS profiles" }
     require(!enableECH) { "Xray backend: turn off ECH" }
-    require(!enableMux) { "Xray backend: turn off multiplexing" }
-    require(packetEncoding == 0) { "Xray backend: use the default packet encoding" }
     require(!allowInsecure) { "Xray 26 removed \"allow insecure\"; use a valid certificate" }
     require(type in XRAY_TRANSPORTS) { "Xray backend does not support transport: $type" }
+    require(!(enableMux && encryption == "xtls-rprx-vision")) {
+        "XTLS Vision cannot be multiplexed"
+    }
 
     if (effectiveSecurity() == "reality") {
         require(type in setOf("tcp", "xhttp", "grpc")) {
@@ -164,17 +165,27 @@ fun StandardV2RayBean.buildXrayVlessConfig(port: Int): String {
         stream["finalmask"] = parseTcpSudokuFinalMask(finalMask)
     }
 
+    // Packet encoding is a sing-box knob; Xray always relays UDP as XUDP, so the
+    // stored value is simply not expressed here.
+    val outbound = linkedMapOf<String, Any>(
+        "tag" to "proxy", "protocol" to "vless",
+        "settings" to mapOf("vnext" to listOf(mapOf(
+            "address" to finalAddress, "port" to finalPort, "users" to listOf(user)
+        ))), "streamSettings" to stream
+    )
+    if (enableMux) {
+        outbound["mux"] = mapOf(
+            "enabled" to true,
+            "concurrency" to ((muxConcurrency ?: 1).coerceAtLeast(1))
+        )
+    }
+
     return Gson().toJson(linkedMapOf(
         "log" to mapOf("loglevel" to "warning"),
         "inbounds" to listOf(mapOf(
             "tag" to "local", "listen" to "127.0.0.1", "port" to port, "protocol" to "socks",
             "settings" to mapOf("auth" to "noauth", "udp" to true, "ip" to "127.0.0.1")
         )),
-        "outbounds" to listOf(mapOf(
-            "tag" to "proxy", "protocol" to "vless",
-            "settings" to mapOf("vnext" to listOf(mapOf(
-                "address" to finalAddress, "port" to finalPort, "users" to listOf(user)
-            ))), "streamSettings" to stream
-        ))
+        "outbounds" to listOf(outbound)
     ))
 }
