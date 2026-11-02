@@ -4,6 +4,7 @@ import com.google.gson.JsonParser
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.fmt.KryoConverters
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
+import moe.matsuri.nb4a.SingBoxOptions.V2RayTransportOptions_HTTPOptions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -109,11 +110,11 @@ class VlessOptionsTest {
 
         val transport = buildSingBoxOutboundStreamSettings(bean)
         assertTrue(transport is V2RayTransportOptions_HTTPOptions)
-        transport as V2RayTransportOptions_HTTPOptions
-        assertEquals("http", transport.type)
-        assertEquals("GET", transport.method)
-        assertEquals(listOf("edge.example"), transport.host)
-        assertEquals("/x", transport.path)
+        val http = transport as V2RayTransportOptions_HTTPOptions
+        assertEquals("http", http.type)
+        assertEquals("GET", http.method)
+        assertEquals(listOf("edge.example"), http.host)
+        assertEquals("/x", http.path)
     }
 
     @Test
