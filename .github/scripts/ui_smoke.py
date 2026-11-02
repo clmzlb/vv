@@ -608,20 +608,56 @@ def test_presets():
         tap(wait_for(resource_id='android:id/button2'))
 
 
-def vless_import():
+def profile_actions(name):
+    """The actions button of the card that carries this profile name."""
+    doc=tree()
+    title=find(doc,text=name)
+    assert title is not None, 'Profile not in the list: '+name
+    parents={child:parent for parent in doc.iter('node') for child in parent}
+    card=title
+    while card is not None and card.get('resource-id') != PACKAGE+':id/content':
+        card=parents.get(card)
+    assert card is not None, 'Profile card not found: '+name
+    actions=find(card,resource_id=PACKAGE+':id/node_actions')
+    assert actions is not None, 'Profile actions not found: '+name
+    return actions
+
+
+def import_vless(uri,name,shot):
     import shlex
-    launch()
-    uri='vless://11111111-1111-4111-8111-111111111111@127.0.0.1:9?encryption=none&type=tcp#VLESS-link-fixture'
     result=adb('shell','am','start','-W','-a','android.intent.action.VIEW','-d',shlex.quote(uri),'-p',PACKAGE)
     assert 'unable to resolve' not in result.lower(), 'VLESS intent not registered'
     tap(wait_for(resource_id='android:id/button1'))
-    wait_for(text='VLESS-link-fixture');capture('vless-system-link-import')
-    # The editor binds every VLESS option by key, so opening it catches a
-    # preference that exists in the bean but not in the layout.
-    tap(wait_for(resource_id=PACKAGE + ':id/node_actions'))
+    wait_for(text=name);capture(shot)
+
+
+def edit_vless(name,shot):
+    """The editor binds every VLESS option by key, so opening it catches a
+    preference that exists in the bean but not in the layout."""
+    tap(profile_actions(name))
     tap(wait_for(text=STRINGS['edit']))
     wait_for(text=STRINGS['server_address'])
-    capture('vless-profile-editor')
+    assert find(tree(),text='VLESS') is not None, 'Editor did not load a VLESS profile: '+name
+    capture(shot)
+
+
+def vless_import():
+    launch()
+    import_vless('vless://11111111-1111-4111-8111-111111111111@127.0.0.1:9?encryption=none&type=tcp#VLESS-link-fixture',
+                 'VLESS-link-fixture','vless-system-link-import')
+    edit_vless('VLESS-link-fixture','vless-tcp-editor')
+    scroll_for(text=STRINGS['vless_encryption']);capture('vless-tcp-options')
+    adb('shell','input','keyevent','BACK');wait_for(resource_id=PACKAGE+':id/toolbar')
+
+    # XHTTP only exists in the bundled Xray core; the editor must still expose
+    # its host, path, mode and extra before the profile is saved.
+    import_vless('vless://11111111-1111-4111-8111-111111111111@127.0.0.1:443?encryption=none&security=tls'
+                 '&sni=example.com&type=xhttp&host=example.com&path=%2Fxhttp&mode=packet-up#VLESS-xhttp-fixture',
+                 'VLESS-xhttp-fixture','vless-xhttp-import')
+    edit_vless('VLESS-xhttp-fixture','vless-xhttp-editor')
+    scroll_for(text=STRINGS['xhttp_mode'])
+    assert find(tree(),text='packet-up') is not None, 'XHTTP mode lost on import'
+    capture('vless-xhttp-options')
     adb('shell','input','keyevent','BACK')
 
 
