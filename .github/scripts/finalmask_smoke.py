@@ -33,7 +33,11 @@ def check(ui):
         'listen': '127.0.0.1', 'port': 18095, 'protocol': 'vless',
         'settings': {'clients': [{'id': uuid}], 'decryption': 'none'},
         'streamSettings': {'network': 'tcp', 'security': 'none', 'finalmask': mask}
-    }], 'outbounds': [{'protocol': 'freedom'}]}
+    }], 'outbounds': [{'protocol': 'freedom', 'settings': {
+        # Xray 26.10 blocks private targets on freedom behind a VLESS inbound by
+        # default (SSRF hardening, 30-90 s blackhole). This fixture has to reach
+        # the loopback origin, so allow it explicitly.
+        'finalRules': [{'action': 'Allow'}]}}]}
     (out / 'server.json').write_text(json.dumps(config))
 
     class Origin(http.server.BaseHTTPRequestHandler):

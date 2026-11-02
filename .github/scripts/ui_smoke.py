@@ -445,7 +445,9 @@ def app_updates():
         text=' '.join(n.get('text','') for n in doc.iter('node'))
         assert '404' not in text and 'Not Found' not in text and 'documentation_url' not in text, text
         expected=STRINGS['update_no_preview'] if key.endswith('preview') else STRINGS['check_update_no']
-        assert expected in text, text
+        # A repository without any published release reports update_no_release on
+        # both channels; that is a correct answer, not an update failure.
+        assert expected in text or STRINGS['update_no_release'] in text, text
         capture('19-'+key)
         tap(find(doc,resource_id='android:id/button1'))
 

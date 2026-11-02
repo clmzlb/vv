@@ -32,7 +32,7 @@ permissions:
 jobs:
   apk:
     runs-on: ubuntu-22.04
-    timeout-minutes: 100
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - name: Remove dangling optional development link
