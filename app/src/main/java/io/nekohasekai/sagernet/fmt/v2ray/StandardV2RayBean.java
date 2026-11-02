@@ -38,8 +38,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     public String utlsFingerprint;
 
-    public Boolean allowInsecure;
-
     // --------------------------------------- reality
 
 
@@ -115,7 +113,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (JavaUtil.isNullOrBlank(utlsFingerprint)) utlsFingerprint = "";
 
         if (wsMaxEarlyData == null) wsMaxEarlyData = 0;
-        if (allowInsecure == null) allowInsecure = false;
         if (packetEncoding == null) packetEncoding = 0;
 
         if (realityPubKey == null) realityPubKey = "";
@@ -136,7 +133,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(6);
+        output.writeInt(7);
         super.serialize(output);
         output.writeString(uuid);
         output.writeString(encryption);
@@ -175,7 +172,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
             output.writeString(sni);
             output.writeString(alpn);
             output.writeString(certificates);
-            output.writeBoolean(allowInsecure);
             output.writeString(utlsFingerprint);
             output.writeString(realityPubKey);
             output.writeString(realityShortId);
@@ -246,7 +242,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
             sni = input.readString();
             alpn = input.readString();
             certificates = input.readString();
-            allowInsecure = input.readBoolean();
+            // Removed in v7: Xray 26 dropped "allow insecure" and every VLESS node now runs there.
+            if (version < 7) input.readBoolean();
             utlsFingerprint = input.readString();
             realityPubKey = input.readString();
             realityShortId = input.readString();

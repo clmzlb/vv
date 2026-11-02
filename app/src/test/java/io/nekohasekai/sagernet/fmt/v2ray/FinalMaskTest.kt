@@ -44,14 +44,19 @@ class FinalMaskTest {
         assertEquals(mask, bean.finalMask)
     }
 
-    @Test fun ordinaryVlessAndVmessStillUseSingBox() {
-        for (uri in listOf(
-            "vless://00000000-0000-4000-8000-000000000001@203.0.113.5:443?type=tcp&security=reality&sni=example.com&pbk=test&sid=00&flow=xtls-rprx-vision",
+    @Test fun everyVlessGoesToXrayWhileVmessStaysOnSingBox() {
+        val vless = parseV2Ray(
+            "vless://00000000-0000-4000-8000-000000000001@203.0.113.5:443?type=tcp&security=reality&sni=example.com&pbk=test&sid=00&flow=xtls-rprx-vision"
+        ).applyDefaultValues()
+        assertEquals("", vless.finalMask)
+        assertTrue(ProxyEntity().apply { putBean(vless) }.needExternal())
+
+        val vmess = parseV2Ray(
             "vmess://00000000-0000-4000-8000-000000000001@203.0.113.5:443?type=ws&security=tls&path=%2Ftest"
-        )) {
-            val bean = parseV2Ray(uri).applyDefaultValues()
-            assertEquals("", bean.finalMask)
-            assertFalse(ProxyEntity().apply { putBean(bean) }.needExternal())
+        ).applyDefaultValues()
+        assertEquals("", vmess.finalMask)
+        assertFalse(ProxyEntity().apply { putBean(vmess) }.needExternal())
+        for (bean in listOf(vless, vmess)) {
             assertEquals(bean, KryoConverters.vmessDeserialize(KryoConverters.serialize(bean)))
         }
     }
@@ -70,7 +75,7 @@ class FinalMaskTest {
         assertEquals("Old VLESS", bean.name)
         assertEquals("{}", bean.customOutboundJson)
         assertEquals("{\"old\":true}", bean.customConfigJson)
-        assertFalse(ProxyEntity().apply { putBean(bean) }.needExternal())
+        assertTrue(ProxyEntity().apply { putBean(bean) }.needExternal())
     }
 
     @Test fun configUsesProtectedLoopbackMappingAndCarriesUdp() {
@@ -101,17 +106,16 @@ class FinalMaskTest {
         assertEquals("node.example", stream()["realitySettings"].asJsonObject["serverName"].asString)
     }
 
-    @Test fun tlsNeverEmitsRemovedAllowInsecure() {
+    @Test fun tlsNeverEmitsAllowInsecure() {
         val bean = parseV2Ray(link()).apply {
             serverAddress = "node.example"; finalAddress = "127.0.0.1"; finalPort = 23456
             security = "tls"; sni = "node.example"
         }
-        fun tls() = JsonParser.parseString(bean.buildXrayVlessConfig(34567)).asJsonObject["outbounds"]
+        val tls = JsonParser.parseString(bean.buildXrayVlessConfig(34567)).asJsonObject["outbounds"]
             .asJsonArray.single().asJsonObject["streamSettings"].asJsonObject["tlsSettings"].asJsonObject
-        // Xray 26.10 rejects "allowInsecure" as a removed feature.
-        assertFalse(tls().has("allowInsecure"))
-        bean.allowInsecure = true
-        assertThrows(IllegalArgumentException::class.java) { bean.buildXrayVlessConfig(34567) }
+        // Xray 26.10 removed the field, and the editor no longer offers it.
+        assertFalse(tls.has("allowInsecure"))
+        assertFalse(tls.has("insecure"))
     }
 
     @Test fun rejectsUnsupportedMasksAndTransportsInsteadOfDowngrading() {

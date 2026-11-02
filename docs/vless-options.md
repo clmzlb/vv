@@ -1,8 +1,8 @@
-# VLESS options and the Xray fallback
+# VLESS options and the bundled Xray core
 
-The VLESS editor carries the same field set as v2rayNG. Most nodes still run on
-sing-box; a node switches to the bundled Xray only when sing-box cannot express
-it.
+The VLESS editor carries the same field set as v2rayNG, and every VLESS profile
+runs on the bundled Xray. sing-box keeps the VPN interface, routing, DNS and
+socket protection; Xray only owns the upstream connection.
 
 ## Fields
 
@@ -10,7 +10,7 @@ it.
 | --- | --- |
 | Identity | UUID, flow (`xtls-rprx-vision`), VLESS encryption (`none` or a `mlkem768x25519plus…` string) |
 | Transport | `tcp`, `ws`, `http`, `quic`, `grpc`, `httpupgrade`, `xhttp`; TCP header type (`none`/`http`); XHTTP mode and `extra` JSON |
-| TLS | SNI, ALPN, certificates, allow insecure, uTLS fingerprint, ECH |
+| TLS | SNI, ALPN, certificates, uTLS fingerprint, ECH |
 | REALITY | public key, short id, `spiderX`, `mldsa65Verify` |
 | Packet | packet encoding (packetaddr/xudp), mux |
 
@@ -18,26 +18,24 @@ it.
 stored REALITY as `tls` plus a public key; they keep working and are still read
 as REALITY.
 
-## When the bundled Xray runs the node
+`allow insecure` is gone. Xray 26.10 removed the field, so the editor no longer
+offers it, links no longer carry `allowInsecure`, and stored profiles drop the
+value on the next save. Only the global "Always allow insecure" master switch
+still applies, and only to the sing-box protocols that support it.
 
-`usesXrayBackend()` is true for VLESS profiles that use any of:
+## Backend
 
-- `type=xhttp` (Xray's SPLITHTTP transport),
-- a non-`none` VLESS encryption key,
-- `mldsa65Verify`,
-- FinalMask Sudoku.
+`usesXrayBackend()` returns true for every VLESS profile. Xray receives a
+loopback SOCKS listener and reaches the server through sing-box's existing
+mapping inbound, so the server address is never exposed to an unprotected
+socket. VMess, Trojan and HTTP nodes are unchanged and stay on sing-box.
 
-Everything else stays on sing-box. In both cases sing-box owns the VPN
-interface, routing, DNS and socket protection; Xray receives a loopback SOCKS
-listener and reaches the server through sing-box's existing mapping inbound, so
-the server address is never exposed to an unprotected socket.
-
-The Xray path rejects combinations Xray 26.10 cannot build: `allowInsecure`,
-ECH, and the removed `http` (h2) / `quic` transports. Multiplexing is passed to
-Xray as its own `mux` block; packet encoding is a sing-box knob and is simply
-left unexpressed (Xray always relays UDP as XUDP). REALITY over the Xray path is
-limited to `tcp`, `xhttp` and `grpc`, matching Xray itself, and XTLS Vision
-cannot be combined with multiplexing.
+The Xray path rejects combinations Xray 26.10 cannot build: ECH, and the
+removed `http` (h2) / `quic` transports. Multiplexing is passed to Xray as its
+own `mux` block; packet encoding is a sing-box knob and is simply left
+unexpressed (Xray always relays UDP as XUDP). REALITY is limited to `tcp`,
+`xhttp` and `grpc`, matching Xray itself, and XTLS Vision cannot be combined
+with multiplexing.
 
 ## Links
 

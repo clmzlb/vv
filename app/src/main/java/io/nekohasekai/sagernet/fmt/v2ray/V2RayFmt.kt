@@ -183,9 +183,6 @@ fun StandardV2RayBean.parseDuckSoft(url: HttpUrl) {
 
     when (security) {
         "tls", "reality" -> {
-            url.queryParameter("allowInsecure")?.let {
-                allowInsecure = it == "1" || it == "true"
-            }
             url.queryParameter("sni")?.let {
                 sni = it
             }
@@ -348,8 +345,6 @@ private fun tryResolveVmess4Kitsunebi(server: String): VMessBean {
         url.queryParameter("alterId")?.apply { alterId = this.toInt() }
         url.queryParameter("path")?.apply { path = this }
         url.queryParameter("tls")?.apply { security = "tls" }
-        url.queryParameter("allowInsecure")
-            ?.apply { if (this == "1" || this == "true") allowInsecure = true }
         url.queryParameter("obfs")?.apply {
             type = this.replace("websocket", "ws").replace("none", "tcp")
             if (type == "ws") {
@@ -566,9 +561,6 @@ fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
                 if (certificates.isNotBlank()) {
                     builder.addQueryParameter("cert", certificates)
                 }
-                if (allowInsecure) {
-                    builder.addQueryParameter("allowInsecure", "1")
-                }
                 if (utlsFingerprint.isNotBlank()) {
                     builder.addQueryParameter("fp", utlsFingerprint)
                 }
@@ -686,7 +678,7 @@ fun buildSingBoxOutboundTLS(bean: StandardV2RayBean): OutboundTLSOptions? {
     if (bean.security != "tls" && bean.security != "reality") return null
     return OutboundTLSOptions().apply {
         enabled = true
-        insecure = bean.allowInsecure || DataStore.globalAllowInsecure
+        insecure = DataStore.globalAllowInsecure
         if (bean.sni.isNotBlank()) server_name = bean.sni
         if (bean.alpn.isNotBlank()) alpn = bean.alpn.listByLineOrComma()
         if (bean.certificates.isNotBlank()) certificate = bean.certificates

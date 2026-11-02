@@ -43,7 +43,7 @@ public class TrojanBean extends StandardV2RayBean {
             security = input.readString();
             sni = input.readString();
             alpn = input.readString();
-            if (version == 1) allowInsecure = input.readBoolean();
+            if (version == 1) input.readBoolean(); // dropped allow insecure
         }
     }
 

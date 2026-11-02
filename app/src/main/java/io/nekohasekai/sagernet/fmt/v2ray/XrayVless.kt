@@ -5,17 +5,12 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
 /**
- * The bundled Xray takes over the nodes sing-box cannot express: XHTTP, VLESS
- * Encryption and the ML-DSA-65 REALITY check. sing-box keeps VPN protection,
- * routing and DNS; Xray only owns the upstream connection.
+ * Every VLESS profile runs on the bundled Xray. It covers what sing-box cannot
+ * express (XHTTP, VLESS Encryption, the ML-DSA-65 REALITY check) and keeps one
+ * code path for all VLESS variants. sing-box still owns VPN protection, routing
+ * and DNS; Xray only owns the upstream connection.
  */
-fun StandardV2RayBean.usesXrayBackend(): Boolean {
-    if (!isVLESS) return false
-    return usesFinalMask() ||
-        type == "xhttp" ||
-        (!vlessEncryption.isNullOrBlank() && vlessEncryption != "none") ||
-        !mldsa65Verify.isNullOrBlank()
-}
+fun StandardV2RayBean.usesXrayBackend(): Boolean = isVLESS
 
 /**
  * Profiles stored before REALITY became its own option carry a TLS security
@@ -36,8 +31,8 @@ fun StandardV2RayBean.validateVlessOptions() {
     if (!usesXrayBackend()) return
 
     require(isVLESS) { "The bundled Xray only runs VLESS profiles" }
-    require(!enableECH) { "Xray backend: turn off ECH" }
-    require(!allowInsecure) { "Xray 26 removed \"allow insecure\"; use a valid certificate" }
+    // ECH and packet encoding are sing-box knobs. Xray neither reads them nor
+    // offers an equivalent, so a stored value is simply not expressed.
     require(type in XRAY_TRANSPORTS) { "Xray backend does not support transport: $type" }
     require(!(enableMux && encryption == "xtls-rprx-vision")) {
         "XTLS Vision cannot be multiplexed"

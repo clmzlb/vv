@@ -267,7 +267,6 @@ object RawUpdater : GroupUpdater() {
                                 setTLS(proxy["tls"]?.toString() == "true")
                                 sni = proxy["sni"]?.toString()
                                 name = proxy["name"]?.toString()
-                                allowInsecure = proxy["skip-cert-verify"]?.toString() == "true"
                             })
                         }
 
@@ -365,8 +364,8 @@ object RawUpdater : GroupUpdater() {
                                     "alpn" -> bean.alpn =
                                         (opt.value as? List<Any>)?.joinToString("\n")
 
-                                    "skip-cert-verify" -> bean.allowInsecure =
-                                        opt.value as? Boolean == true
+                                    // Removed with allow insecure: Xray 26 dropped the field, so a
+                                    // subscription's skip-cert-verify cannot be honoured here.
 
                                     "client-fingerprint" -> bean.utlsFingerprint =
                                         opt.value as String

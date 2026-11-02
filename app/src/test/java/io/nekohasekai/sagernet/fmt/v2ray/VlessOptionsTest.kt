@@ -4,9 +4,7 @@ import com.google.gson.JsonParser
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.fmt.KryoConverters
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
-import moe.matsuri.nb4a.SingBoxOptions.V2RayTransportOptions_HTTPOptions
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
@@ -92,29 +90,31 @@ class VlessOptionsTest {
     }
 
     @Test
-    fun plainRealityStaysOnSingBox() {
+    fun plainRealityAlsoRunsOnXray() {
         val bean = parse("type=tcp&security=reality&sni=example.com&pbk=pub&sid=00&flow=xtls-rprx-vision")
         assertEquals("reality", bean.security)
-        assertFalse(external(bean))
-        assertFalse(bean.usesXrayBackend())
+        assertTrue(external(bean))
+        assertTrue(bean.usesXrayBackend())
+        val settings = stream(prepare(bean))
+        assertEquals("tcp", settings["network"].asString)
+        assertEquals("reality", settings["security"].asString)
+        assertEquals("pub", settings["realitySettings"].asJsonObject["publicKey"].asString)
     }
 
     @Test
-    fun tcpHeaderObfsKeepsItsOwnTransport() {
+    fun tcpHeaderObfsBecomesXrayTcpSettings() {
         val bean = parse("type=tcp&headerType=http&security=none&host=edge.example&path=%2Fx")
         assertEquals("tcp", bean.type)
         assertEquals("http", bean.headerType)
         assertEquals("edge.example", bean.host)
         assertEquals("/x", bean.path)
-        assertFalse(external(bean))
+        assertTrue(external(bean))
 
-        val transport = buildSingBoxOutboundStreamSettings(bean)
-        assertTrue(transport is V2RayTransportOptions_HTTPOptions)
-        val http = transport as V2RayTransportOptions_HTTPOptions
-        assertEquals("http", http.type)
-        assertEquals("GET", http.method)
-        assertEquals(listOf("edge.example"), http.host)
-        assertEquals("/x", http.path)
+        val settings = stream(prepare(bean))
+        assertEquals("tcp", settings["network"].asString)
+        val request = settings["tcpSettings"].asJsonObject["header"].asJsonObject["request"].asJsonObject
+        assertEquals("/x", request["path"].asJsonArray.single().asString)
+        assertEquals("edge.example", request["headers"].asJsonObject["Host"].asJsonArray.single().asString)
     }
 
     @Test
@@ -204,13 +204,16 @@ class VlessOptionsTest {
     }
 
     @Test
-    fun ordinaryVlessHasNoXrayOnlyDefaults() {
+    fun ordinaryVlessKeepsItsDefaultsAndStillUsesXray() {
         val bean = parse("type=ws&security=tls&sni=example.com&path=%2Fws")
         assertEquals("", bean.vlessEncryption)
         assertEquals("none", bean.headerType)
         assertEquals("", bean.xhttpMode)
         assertEquals("", bean.spiderX)
         assertNotNull(bean.serverAddress)
-        assertFalse(bean.usesXrayBackend())
+        assertTrue(bean.usesXrayBackend())
+        val settings = stream(prepare(bean))
+        assertEquals("ws", settings["network"].asString)
+        assertEquals("/ws", settings["wsSettings"].asJsonObject["path"].asString)
     }
 }

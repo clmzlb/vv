@@ -267,6 +267,16 @@
         <item>xhttp</item>
     </string-array>
 
+    <!-- VLESS always runs on the bundled Xray, which dropped the h2 and QUIC
+         transports, so the editor only offers what the core can build. -->
+    <string-array name="networks_value_vless" translatable="false">
+        <item>tcp</item>
+        <item>ws</item>
+        <item>httpupgrade</item>
+        <item>grpc</item>
+        <item>xhttp</item>
+    </string-array>
+
     <string-array name="trojan_go_networks_entry">
         <item>NONE</item>
         <item>WEBSOCKET</item>

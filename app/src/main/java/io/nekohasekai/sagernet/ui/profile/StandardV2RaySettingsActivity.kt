@@ -49,7 +49,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     private val sni = pbm.add(PreferenceBinding(Type.Text, "sni"))
     private val alpn = pbm.add(PreferenceBinding(Type.Text, "alpn"))
     private val certificates = pbm.add(PreferenceBinding(Type.Text, "certificates"))
-    private val allowInsecure = pbm.add(PreferenceBinding(Type.Bool, "allowInsecure"))
     private val utlsFingerprint = pbm.add(PreferenceBinding(Type.Text, "utlsFingerprint"))
     private val realityPubKey = pbm.add(PreferenceBinding(Type.Text, "realityPubKey"))
     private val realityShortId = pbm.add(PreferenceBinding(Type.Text, "realityShortId"))
@@ -175,6 +174,11 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         type.preference.apply {
             updateView(type.readStringFromCache())
             this as SimpleMenuPreference
+            if (isVless) {
+                // Xray 26 removed h2 and QUIC, so VLESS only offers what it can build.
+                setEntries(R.array.networks_value_vless)
+                setEntryValues(R.array.networks_value_vless)
+            }
             setOnPreferenceChangeListener { _, newValue ->
                 updateView(newValue as String)
                 true
@@ -248,7 +252,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isTLS = tls == "tls" || tls == "reality"
         securityCategory.isVisible = isTLS
         tlsCamouflageCategory.isVisible = isTLS
-        echCategory.isVisible = isTLS
+        // Xray has no ECH, and every VLESS profile runs there.
+        echCategory.isVisible = isTLS && tmpBean?.isVLESS != true
         spiderX.preference.isVisible = tls == "reality"
         mldsa65Verify.preference.isVisible = tls == "reality"
     }

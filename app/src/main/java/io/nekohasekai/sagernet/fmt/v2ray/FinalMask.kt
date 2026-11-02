@@ -54,13 +54,7 @@ fun StandardV2RayBean.validateFinalMask() {
     if (!usesFinalMask()) return
     require(isVLESS && type == "tcp") { "FinalMask Sudoku requires VLESS over TCP" }
     require(security in listOf("none", "tls", "reality")) { "Unsupported Sudoku transport security" }
-    // Xray 26.10 removed "allowInsecure"; such nodes must not be routed through the bundled core.
-    require(!allowInsecure) {
-        "FinalMask Sudoku requires certificate verification; turn off allow insecure"
-    }
-    require(!enableECH && !enableMux && packetEncoding == 0) {
-        "FinalMask Sudoku requires ECH and multiplexing off, with default packet encoding"
-    }
+    require(!enableMux) { "FinalMask Sudoku requires multiplexing off" }
     require(encryption in listOf("", "none", "xtls-rprx-vision")) { "Unsupported VLESS flow" }
     require(encryption != "xtls-rprx-vision" || security != "none") { "XTLS Vision requires TLS or REALITY" }
     parseTcpSudokuFinalMask(finalMask)
