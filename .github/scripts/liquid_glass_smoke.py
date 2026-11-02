@@ -94,7 +94,12 @@ def check(ui):
         reduced = Image.open(ui.OUT/'glass-reduced-transparency.png').convert('RGB')
         assert max(ImageStat.Stat(ImageChops.difference(normal.crop(area),reduced.crop(area))).mean)>3, \
             'Reduce transparency changed the setting but not the recreated surface'
-        assert max(hi-lo for lo,hi in reduced.crop(area).getextrema()) <= 2, \
+        # The profile list reaches into the middle band as soon as the suite has
+        # imported its fixtures, and a card's text is not ambient glass. Measure
+        # the left margin, which stays background in every style: 0 levels when
+        # transparency is reduced, 15-23 while the gradient is on.
+        margin = (0, h//2, max(1, w//32), h*3//4)
+        assert max(hi-lo for lo,hi in reduced.crop(margin).getextrema()) <= 2, \
             'Reduced transparency still renders the ambient glass gradients'
         set_transparency(original_reduce)
         ui.navigate('nav_configuration');ui.capture('glass-restored-transparency')
