@@ -205,7 +205,7 @@ jobs:
             app/schemas/
           if-no-files-found: warn
       - name: Publish APKs
-        if: inputs.publish
+        if: success() && inputs.publish
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.tag }}

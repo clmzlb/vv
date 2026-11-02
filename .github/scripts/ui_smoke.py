@@ -631,6 +631,16 @@ def import_vless(uri,name,shot):
     wait_for(text=name);capture(shot)
 
 
+def swipe_to(label,swipes=4):
+    """Scroll the preference list a bounded number of times until the row shows."""
+    width,height=map(int,re.findall(r'(\d+)x(\d+)',adb('shell','wm','size'))[-1])
+    for _ in range(swipes):
+        if find(tree(),text=label) is not None: return
+        adb('shell','input','swipe',str(width//2),str(3*height//4),str(width//2),str(height//3),'350')
+        time.sleep(.5)
+    raise AssertionError('Preference row did not appear: '+label)
+
+
 def edit_vless(name,shot):
     """The editor binds every VLESS option by key, so opening it catches a
     preference that exists in the bean but not in the layout."""
@@ -645,7 +655,7 @@ def vless_import():
     import_vless('vless://11111111-1111-4111-8111-111111111111@127.0.0.1:9?encryption=none&type=tcp#VLESS-link-fixture',
                  'VLESS-link-fixture','vless-system-link-import')
     edit_vless('VLESS-link-fixture','vless-tcp-editor')
-    scroll_for(text=STRINGS['vless_encryption']);capture('vless-tcp-options')
+    swipe_to(STRINGS['vless_encryption']);capture('vless-tcp-options')
     adb('shell','input','keyevent','BACK');wait_for(resource_id=PACKAGE+':id/toolbar')
 
     # XHTTP only exists in the bundled Xray core; the editor must still expose
@@ -654,7 +664,7 @@ def vless_import():
                  '&sni=example.com&type=xhttp&host=example.com&path=%2Fxhttp&mode=packet-up#VLESS-xhttp-fixture',
                  'VLESS-xhttp-fixture','vless-xhttp-import')
     edit_vless('VLESS-xhttp-fixture','vless-xhttp-editor')
-    scroll_for(text=STRINGS['xhttp_mode'])
+    swipe_to(STRINGS['xhttp_mode'])
     assert find(tree(),text='packet-up') is not None, 'XHTTP mode lost on import'
     capture('vless-xhttp-options')
     adb('shell','input','keyevent','BACK')
