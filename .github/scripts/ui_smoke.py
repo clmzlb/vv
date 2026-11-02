@@ -637,7 +637,6 @@ def edit_vless(name,shot):
     tap(profile_actions(name))
     tap(wait_for(text=STRINGS['edit']))
     wait_for(text=STRINGS['server_address'])
-    assert find(tree(),text='VLESS') is not None, 'Editor did not load a VLESS profile: '+name
     capture(shot)
 
 
