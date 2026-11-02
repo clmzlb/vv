@@ -33,7 +33,7 @@ python3 .github/scripts/package_builtins.py
 
 然后按照项目的原有流程准备两个 sing-box AAR 并编译 APK。组件清单随应用打包，可在「内核管理」查看。从 1.6.0 起，Trojan-Go、NaïveProxy、Mieru 和 Snell 与 sing-box 一样支持独立更新：检查对应渠道、下载签名兼容包、停止连接后应用，也可恢复 APK 内置版本。未发布 Android 兼容测试包的渠道会明确提示暂不可用。
 
-维护者可运行 `ArcaenBox Native Components` 工作流单独构建组件；修改锁定的源码版本与哈希时，需要递增该渠道的 revision。验证产物后通过 `source_run` 发布同一份签名包。已发布 revision 的字节不可替换，组件发布不会抢占应用的 Latest Release。
+维护者可运行 `ArcaenBox Native Components` 工作流单独构建组件；修改锁定的源码版本与哈希时，需要递增该渠道的 revision。验证产物后通过 `source_run` 发布同一份签名包。已发布 revision 的字节不可替换，组件发布不会抢占应用的 Latest Release。上游版本由 `ArcaenBox Upstream Sync` 每日自动同步，自动范围、观察期与人工处理项见 [上游组件同步](upstream-sync.md)。
 
 ## 仅更新应用界面时复用内核
 

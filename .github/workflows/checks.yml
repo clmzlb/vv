@@ -14,6 +14,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - name: Offline self-test for the upstream sync script
+        run: python3 .github/scripts/sync_upstreams.py --self-test
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

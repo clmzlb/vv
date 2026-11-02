@@ -1,0 +1,179 @@
+name: ArcaenBox Upstream Sync
+on:
+  schedule:
+    # Daily at 03:17 UTC (11:17 Beijing); offset from the top of the hour on purpose.
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Commit the new pins and publish the rebuilt components
+        type: boolean
+        default: true
+      components:
+        description: Comma-separated component ids, or blank to check every component
+        required: false
+      min_age_hours:
+        description: Hours to wait after an upstream release before syncing it
+        default: '24'
+        required: false
+permissions:
+  contents: write
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+jobs:
+  detect:
+    name: Detect upstream releases
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    outputs:
+      changed: ${{ steps.probe.outputs.changed }}
+      errors: ${{ steps.probe.outputs.errors }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare every pin with its upstream
+        id: probe
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMPONENTS: ${{ inputs.components }}
+          MIN_AGE_HOURS: ${{ inputs.min_age_hours || 24 }}
+        run: |
+          python3 .github/scripts/sync_upstreams.py --check --strict \
+            --components "$COMPONENTS" \
+            --min-age-hours "$MIN_AGE_HOURS" \
+            --json upstream-report.json --summary upstream-summary.md \
+            --github-output "$GITHUB_OUTPUT"
+      - name: Explain the result on the run page
+        if: always()
+        run: |
+          if [ -f upstream-summary.md ]; then
+            cat upstream-summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -n "${{ steps.probe.outputs.errors }}" ]; then
+            printf '\n> Upstream checks failed for: %s\n' "${{ steps.probe.outputs.errors }}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: UpstreamSyncReport
+          path: |
+            upstream-report.json
+            upstream-summary.md
+          if-no-files-found: warn
+  sync:
+    name: Rebuild and publish updated components
+    needs: detect
+    if: needs.detect.outputs.changed != ''
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - name: Install the build toolchain
+        run: |
+          sdkmanager 'ndk;25.0.8775105'
+          python3 -m pip install cryptography==45.0.7
+      - name: Refresh the pinned versions
+        id: apply
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMPONENTS: ${{ needs.detect.outputs.changed }}
+          MIN_AGE_HOURS: ${{ inputs.min_age_hours || 24 }}
+        run: |
+          python3 .github/scripts/sync_upstreams.py --apply \
+            --components "$COMPONENTS" \
+            --min-age-hours "$MIN_AGE_HOURS" \
+            --json upstream-applied.json --summary upstream-applied.md \
+            --github-output "$GITHUB_OUTPUT"
+      - name: Show the pin diff
+        if: steps.apply.outputs.publish != ''
+        run: |
+          git --no-pager diff --stat
+          git --no-pager diff -- buildScript/builtins/versions.json docs
+      - name: Build every pinned executable
+        if: steps.apply.outputs.publish != ''
+        run: |
+          set -euo pipefail
+          export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/25.0.8775105"
+          python3 .github/scripts/package_builtins.py
+      - name: Sign the component channels
+        if: steps.apply.outputs.publish != ''
+        env:
+          SIGNING_KEYSTORE: ${{ secrets.ARCAENBOX_KEYSTORE }}
+          KEYSTORE_PASS: ${{ secrets.ARCAENBOX_KEYSTORE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$SIGNING_KEYSTORE"
+          printf '%s' "$SIGNING_KEYSTORE" | base64 --decode > release.keystore
+          python3 .github/scripts/package_components.py --keystore release.keystore
+      - uses: actions/upload-artifact@v4
+        if: steps.apply.outputs.publish != ''
+        with:
+          name: NativeComponentUpdates
+          path: core-build/component-updates
+          if-no-files-found: error
+      - name: Commit the new pins
+        id: commit
+        if: steps.apply.outputs.publish != '' && (github.event_name == 'schedule' || inputs.publish)
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add buildScript/builtins/versions.json docs/built-in-protocols.md docs/vless-sudoku.md docs/mieru-import.md
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit; upstream moved again and is likely still in its soak window.'
+            echo 'sha=' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m 'Sync upstream native components' -m "$(cat upstream-applied.md)"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git pull --rebase --autostash origin main
+          done
+          echo 'Could not push the synced pins' >&2
+          exit 1
+      - name: Publish immutable component channels
+        if: steps.commit.outputs.sha != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH: ${{ steps.apply.outputs.publish }}
+          TARGET: ${{ steps.commit.outputs.sha }}
+        run: |
+          set -euo pipefail
+          # Publish exactly the channels whose bytes changed. A revision is
+          # immutable, so an unchanged channel keeps its existing release.
+          for target in $(printf '%s' "$PUBLISH" | tr ',' ' '); do
+            component="${target%%:*}"
+            channel="${target##*:}"
+            python3 .github/scripts/publish_components.py \
+              --target "$TARGET" --component "$component" --channel "$channel"
+          done
+      - name: Dry-run notice
+        if: github.event_name == 'workflow_dispatch' && !inputs.publish
+        run: |
+          printf '> Dry run: pins were not committed and no component channel was published.\n' >> "$GITHUB_STEP_SUMMARY"
+      - name: Sum the sync up
+        if: always()
+        run: |
+          if [ -f upstream-applied.md ]; then
+            cat upstream-applied.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -d core-build/component-updates ]; then
+            printf '\nBuilt packages:\n\n' >> "$GITHUB_STEP_SUMMARY"
+            find core-build/component-updates -name 'manifest.json' -printf '- `%h`\n' | sort >> "$GITHUB_STEP_SUMMARY"
+          fi
