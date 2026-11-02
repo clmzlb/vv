@@ -13,14 +13,20 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String encryption; // or VLESS flow
     public String finalMask;
 
+    // VLESS Encryption ("none" or a mlkem768x25519plus string), separate from flow
+    public String vlessEncryption;
+
     //////// End of VMess & VLESS ////////
 
-    // "V2Ray Transport" tcp/http/ws/quic/grpc/httpupgrade
+    // "V2Ray Transport" tcp/http/ws/quic/grpc/httpupgrade/xhttp
     public String type;
 
     public String host;
 
     public String path;
+
+    // TCP obfuscation header: none/http
+    public String headerType;
 
     // --------------------------------------- tls?
 
@@ -40,6 +46,16 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String realityPubKey;
 
     public String realityShortId;
+
+    public String spiderX;
+
+    public String mldsa65Verify;
+
+    // --------------------------------------- xhttp
+
+    public String xhttpMode;
+
+    public String xhttpExtra;
 
 
     // --------------------------------------- //
@@ -73,6 +89,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         if (JavaUtil.isNullOrBlank(uuid)) uuid = "";
         if (finalMask == null) finalMask = "";
+        if (JavaUtil.isNullOrBlank(vlessEncryption)) vlessEncryption = "";
+        if (JavaUtil.isNullOrBlank(headerType)) headerType = "none";
 
         if (JavaUtil.isNullOrBlank(type)) type = "tcp";
         else if ("h2".equals(type)) type = "http";
@@ -102,6 +120,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         if (realityPubKey == null) realityPubKey = "";
         if (realityShortId == null) realityShortId = "";
+        if (spiderX == null) spiderX = "";
+        if (mldsa65Verify == null) mldsa65Verify = "";
+        if (xhttpMode == null) xhttpMode = "";
+        if (xhttpExtra == null) xhttpExtra = "";
 
         if (enableECH == null) enableECH = false;
         if (JavaUtil.isNullOrBlank(echConfig)) echConfig = "";
@@ -114,7 +136,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(5);
+        output.writeInt(6);
         super.serialize(output);
         output.writeString(uuid);
         output.writeString(encryption);
@@ -136,7 +158,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 break;
             }
             case "http":
-            case "httpupgrade": {
+            case "httpupgrade":
+            case "xhttp": {
                 output.writeString(host);
                 output.writeString(path);
                 break;
@@ -148,7 +171,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         }
 
         output.writeString(security);
-        if ("tls".equals(security)) {
+        if (hasTLSBlock()) {
             output.writeString(sni);
             output.writeString(alpn);
             output.writeString(certificates);
@@ -168,6 +191,12 @@ public abstract class StandardV2RayBean extends AbstractBean {
         output.writeInt(muxType);
         output.writeInt(muxConcurrency);
         output.writeString(finalMask);
+        output.writeString(vlessEncryption);
+        output.writeString(spiderX);
+        output.writeString(mldsa65Verify);
+        output.writeString(xhttpMode);
+        output.writeString(xhttpExtra);
+        output.writeString(headerType);
     }
 
     @Override
@@ -194,7 +223,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 break;
             }
             case "http":
-            case "httpupgrade": {
+            case "httpupgrade":
+            case "xhttp": {
                 host = input.readString();
                 path = input.readString();
                 break;
@@ -211,7 +241,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
         }
 
         security = input.readString();
-        if ("tls".equals(security)) {
+        boolean tlsBlock = version >= 6 ? hasTLSBlock() : "tls".equals(security);
+        if (tlsBlock) {
             sni = input.readString();
             alpn = input.readString();
             certificates = input.readString();
@@ -260,6 +291,19 @@ public abstract class StandardV2RayBean extends AbstractBean {
             muxConcurrency = input.readInt();
         }
         if (version >= 5) finalMask = input.readString();
+        if (version >= 6) {
+            vlessEncryption = input.readString();
+            spiderX = input.readString();
+            mldsa65Verify = input.readString();
+            xhttpMode = input.readString();
+            xhttpExtra = input.readString();
+            headerType = input.readString();
+        }
+    }
+
+    /** REALITY reuses the TLS parameter block; keep both in sync across versions. */
+    public boolean hasTLSBlock() {
+        return "tls".equals(security) || "reality".equals(security);
     }
 
     public boolean isVLESS() {

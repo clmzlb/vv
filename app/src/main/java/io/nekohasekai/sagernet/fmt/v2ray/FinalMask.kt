@@ -1,6 +1,5 @@
 package io.nekohasekai.sagernet.fmt.v2ray
 
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
@@ -54,7 +53,7 @@ fun StandardV2RayBean.usesFinalMask(): Boolean = !finalMask.isNullOrBlank()
 fun StandardV2RayBean.validateFinalMask() {
     if (!usesFinalMask()) return
     require(isVLESS && type == "tcp") { "FinalMask Sudoku requires VLESS over TCP" }
-    require(security in listOf("none", "tls")) { "Unsupported Sudoku transport security" }
+    require(security in listOf("none", "tls", "reality")) { "Unsupported Sudoku transport security" }
     // Xray 26.10 removed "allowInsecure"; such nodes must not be routed through the bundled core.
     require(!allowInsecure) {
         "FinalMask Sudoku requires certificate verification; turn off allow insecure"
@@ -63,51 +62,6 @@ fun StandardV2RayBean.validateFinalMask() {
         "FinalMask Sudoku requires ECH and multiplexing off, with default packet encoding"
     }
     require(encryption in listOf("", "none", "xtls-rprx-vision")) { "Unsupported VLESS flow" }
-    require(encryption != "xtls-rprx-vision" || security == "tls") { "XTLS Vision requires TLS or REALITY" }
+    require(encryption != "xtls-rprx-vision" || security != "none") { "XTLS Vision requires TLS or REALITY" }
     parseTcpSudokuFinalMask(finalMask)
-}
-
-/** Xray only handles this node. sing-box owns VPN protection, routing and DNS. */
-fun StandardV2RayBean.buildXrayFinalMaskConfig(port: Int): String {
-    validateFinalMask()
-    require(usesFinalMask()) { "Missing FinalMask Sudoku configuration" }
-    val user = linkedMapOf<String, Any>("id" to uuid, "encryption" to "none")
-    if (encryption !in listOf("", "none")) user["flow"] = encryption
-    val stream = linkedMapOf<String, Any>(
-        "network" to "tcp", "security" to security,
-        "finalmask" to parseTcpSudokuFinalMask(finalMask)
-    )
-    if (security == "tls") {
-        val serverName = sni.ifBlank { serverAddress }
-        if (realityPubKey.isNotBlank()) {
-            stream["security"] = "reality"
-            stream["realitySettings"] = mapOf(
-                "serverName" to serverName, "publicKey" to realityPubKey,
-                "shortId" to realityShortId, "fingerprint" to utlsFingerprint.ifBlank { "chrome" }
-            )
-        } else {
-            stream["tlsSettings"] = linkedMapOf<String, Any>(
-                "serverName" to serverName
-            ).apply {
-                if (alpn.isNotBlank()) put("alpn", alpn.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() })
-                if (utlsFingerprint.isNotBlank()) put("fingerprint", utlsFingerprint)
-                if (certificates.isNotBlank()) put("certificates", listOf(mapOf(
-                    "usage" to "verify", "certificate" to certificates.lines()
-                )))
-            }
-        }
-    }
-    return Gson().toJson(linkedMapOf(
-        "log" to mapOf("loglevel" to "warning"),
-        "inbounds" to listOf(mapOf(
-            "tag" to "local", "listen" to "127.0.0.1", "port" to port, "protocol" to "socks",
-            "settings" to mapOf("auth" to "noauth", "udp" to true, "ip" to "127.0.0.1")
-        )),
-        "outbounds" to listOf(mapOf(
-            "tag" to "proxy", "protocol" to "vless",
-            "settings" to mapOf("vnext" to listOf(mapOf(
-                "address" to finalAddress, "port" to finalPort, "users" to listOf(user)
-            ))), "streamSettings" to stream
-        ))
-    ))
 }

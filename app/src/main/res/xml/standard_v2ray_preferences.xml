@@ -45,6 +45,11 @@
             app:key="encryption"
             app:title="@string/encryption"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_notification_enhanced_encryption"
+            app:key="vlessEncryption"
+            app:title="@string/vless_encryption"
+            app:useSimpleSummaryProvider="true" />
         <moe.matsuri.nb4a.ui.SimpleMenuPreference
             app:entries="@array/packet_encoding_entry"
             app:entryValues="@array/int_array_3"
@@ -68,6 +73,25 @@
             app:icon="@drawable/ic_baseline_format_align_left_24"
             app:key="path"
             app:title="@string/http_path"
+            app:useSimpleSummaryProvider="true" />
+        <moe.matsuri.nb4a.ui.SimpleMenuPreference
+            app:entries="@array/tcp_header_type_value"
+            app:entryValues="@array/tcp_header_type_value"
+            app:icon="@drawable/ic_baseline_layers_24"
+            app:key="headerType"
+            app:title="@string/tcp_header_type"
+            app:useSimpleSummaryProvider="true" />
+        <moe.matsuri.nb4a.ui.SimpleMenuPreference
+            app:entries="@array/xhttp_mode_value"
+            app:entryValues="@array/xhttp_mode_value"
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="xhttpMode"
+            app:title="@string/xhttp_mode"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_stream_24"
+            app:key="xhttpExtra"
+            app:title="@string/xhttp_extra"
             app:useSimpleSummaryProvider="true" />
         <moe.matsuri.nb4a.ui.SimpleMenuPreference
             app:entries="@array/transport_layer_encryption_value"
@@ -145,6 +169,16 @@
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="realityShortId"
             app:title="Reality ShortId"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="spiderX"
+            app:title="@string/spider_x"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_security_24"
+            app:key="mldsa65Verify"
+            app:title="@string/mldsa65_verify"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

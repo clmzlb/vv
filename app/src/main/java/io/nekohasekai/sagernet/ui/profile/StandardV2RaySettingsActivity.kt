@@ -14,7 +14,7 @@ import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
-import io.nekohasekai.sagernet.fmt.v2ray.validateFinalMask
+import io.nekohasekai.sagernet.fmt.v2ray.validateVlessOptions
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import moe.matsuri.nb4a.proxy.PreferenceBinding
 import moe.matsuri.nb4a.proxy.PreferenceBindingManager
@@ -34,10 +34,14 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     private val password = pbm.add(PreferenceBinding(Type.Text, "password"))
     private val alterId = pbm.add(PreferenceBinding(Type.TextToInt, "alterId"))
     private val encryption = pbm.add(PreferenceBinding(Type.Text, "encryption"))
+    private val vlessEncryption = pbm.add(PreferenceBinding(Type.Text, "vlessEncryption"))
     private val finalMask = pbm.add(PreferenceBinding(Type.Text, "finalMask"))
     private val type = pbm.add(PreferenceBinding(Type.Text, "type"))
     private val host = pbm.add(PreferenceBinding(Type.Text, "host"))
     private val path = pbm.add(PreferenceBinding(Type.Text, "path"))
+    private val headerType = pbm.add(PreferenceBinding(Type.Text, "headerType"))
+    private val xhttpMode = pbm.add(PreferenceBinding(Type.Text, "xhttpMode"))
+    private val xhttpExtra = pbm.add(PreferenceBinding(Type.Text, "xhttpExtra"))
     private val packetEncoding = pbm.add(PreferenceBinding(Type.TextToInt, "packetEncoding"))
     private val wsMaxEarlyData = pbm.add(PreferenceBinding(Type.TextToInt, "wsMaxEarlyData"))
     private val earlyDataHeaderName = pbm.add(PreferenceBinding(Type.Text, "earlyDataHeaderName"))
@@ -49,6 +53,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     private val utlsFingerprint = pbm.add(PreferenceBinding(Type.Text, "utlsFingerprint"))
     private val realityPubKey = pbm.add(PreferenceBinding(Type.Text, "realityPubKey"))
     private val realityShortId = pbm.add(PreferenceBinding(Type.Text, "realityShortId"))
+    private val spiderX = pbm.add(PreferenceBinding(Type.Text, "spiderX"))
+    private val mldsa65Verify = pbm.add(PreferenceBinding(Type.Text, "mldsa65Verify"))
 
     private val enableECH = pbm.add(PreferenceBinding(Type.Bool, "enableECH"))
     private val echConfig = pbm.add(PreferenceBinding(Type.Text, "echConfig"))
@@ -71,7 +77,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     override fun StandardV2RayBean.serialize() {
         pbm.fromCacheAll(this)
         initializeDefaultValues()
-        validateFinalMask()
+        validateVlessOptions()
     }
 
     override suspend fun saveAndExit() {
@@ -122,6 +128,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         packetEncoding.preference.isVisible = isVmess || isVless
         alterId.preference.isVisible = isVmess
         encryption.preference.isVisible = isVmess || isVless
+        vlessEncryption.preference.isVisible = isVless
         username.preference.isVisible = isHttp
         password.preference.isVisible = isHttp
         finalMask.preference.apply {
@@ -134,6 +141,15 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 edit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
                 edit.setSingleLine(false)
                 edit.minLines = 5
+            }
+        }
+
+        xhttpExtra.preference.apply {
+            this as EditTextPreference
+            setOnBindEditTextListener { edit ->
+                edit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                edit.setSingleLine(false)
+                edit.minLines = 3
             }
         }
 
@@ -179,11 +195,15 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         host.preference.isVisible = false
         path.preference.isVisible = false
         wsCategory.isVisible = false
+        headerType.preference.isVisible = false
+        xhttpMode.preference.isVisible = false
+        xhttpExtra.preference.isVisible = false
 
         when (network) {
             "tcp" -> {
                 host.preference.setTitle(R.string.http_host)
                 path.preference.setTitle(R.string.http_path)
+                headerType.preference.isVisible = true
             }
 
             "http" -> {
@@ -212,14 +232,25 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 host.preference.isVisible = true
                 path.preference.isVisible = true
             }
+
+            "xhttp" -> {
+                host.preference.setTitle(R.string.ws_host)
+                path.preference.setTitle(R.string.ws_path)
+                host.preference.isVisible = true
+                path.preference.isVisible = true
+                xhttpMode.preference.isVisible = true
+                xhttpExtra.preference.isVisible = true
+            }
         }
     }
 
     private fun updateTls(tls: String) {
-        val isTLS = "tls" in tls
+        val isTLS = tls == "tls" || tls == "reality"
         securityCategory.isVisible = isTLS
         tlsCamouflageCategory.isVisible = isTLS
         echCategory.isVisible = isTLS
+        spiderX.preference.isVisible = tls == "reality"
+        mldsa65Verify.preference.isVisible = tls == "reality"
     }
 
 }

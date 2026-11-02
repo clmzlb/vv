@@ -32,12 +32,14 @@ data class VmessQRCode(
 )
 
 fun StandardV2RayBean.isTLS(): Boolean {
-    return security == "tls"
+    return security == "tls" || security == "reality"
 }
 
 fun StandardV2RayBean.setTLS(boolean: Boolean) {
     security = if (boolean) "tls" else ""
 }
+
+val XHTTP_MODES = listOf("auto", "packet-up", "stream-up", "stream-one")
 
 fun parseV2Ray(link: String): StandardV2RayBean {
     // Only legacy VMess payloads are base64. Do not run VLESS or standard
@@ -163,7 +165,16 @@ fun StandardV2RayBean.parseDuckSoft(url: HttpUrl) {
     }
 
     type = url.queryParameter("type") ?: "tcp"
-    if (type == "h2" || url.queryParameter("headerType") == "http") type = "http"
+    // Xray renamed a few transports; keep one canonical name for the editor.
+    type = when (type) {
+        "h2" -> "http"
+        "raw" -> "tcp"
+        "splithttp" -> "xhttp"
+        else -> type
+    }
+    if (type == "tcp" && url.queryParameter("headerType") == "http") {
+        headerType = "http"
+    }
 
     security = url.queryParameter("security")
     if (security.isNullOrBlank()) {
@@ -172,7 +183,6 @@ fun StandardV2RayBean.parseDuckSoft(url: HttpUrl) {
 
     when (security) {
         "tls", "reality" -> {
-            security = "tls"
             url.queryParameter("allowInsecure")?.let {
                 allowInsecure = it == "1" || it == "true"
             }
@@ -194,10 +204,27 @@ fun StandardV2RayBean.parseDuckSoft(url: HttpUrl) {
             url.queryParameter("sid")?.let {
                 realityShortId = it
             }
+            url.queryParameter("spx")?.let {
+                spiderX = it
+            }
+            url.queryParameter("mldsa65Verify")?.let {
+                mldsa65Verify = it
+            }
         }
     }
 
     when (type) {
+        "tcp" -> {
+            if (headerType == "http") {
+                url.queryParameter("host")?.let {
+                    host = it
+                }
+                url.queryParameter("path")?.let {
+                    path = it
+                }
+            }
+        }
+
         "http" -> {
             url.queryParameter("host")?.let {
                 host = it
@@ -237,12 +264,35 @@ fun StandardV2RayBean.parseDuckSoft(url: HttpUrl) {
                 path = it
             }
         }
+
+        "xhttp" -> {
+            url.queryParameter("host")?.let {
+                host = it
+            }
+            url.queryParameter("path")?.let {
+                path = it
+            }
+            url.queryParameter("mode")?.let {
+                if (it in XHTTP_MODES) xhttpMode = it
+            }
+            url.queryParameter("extra")?.let {
+                xhttpExtra = it
+            }
+        }
     }
 
     // maybe from matsuri vmess exoprt
     if (this is VMessBean && !isVLESS) {
         url.queryParameter("encryption")?.let {
             encryption = it
+        }
+    }
+
+    // VLESS Encryption (ML-KEM) rides in "encryption"; "none" is the default and
+    // must stay empty so the links without it keep comparing equal.
+    if (isVLESS) {
+        url.queryParameter("encryption")?.let {
+            vlessEncryption = it.takeIf { value -> value != "none" } ?: ""
         }
     }
 
@@ -439,7 +489,7 @@ fun VMessBean.toV2rayN(): String {
 }
 
 fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
-    validateFinalMask()
+    validateVlessOptions()
     // VMess
     if (this is VMessBean && !isVLESS) {
         return toV2rayN()
@@ -453,14 +503,27 @@ fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
         .addQueryParameter("type", type)
 
     if (isVLESS) {
-        builder.addQueryParameter("encryption", "none")
-        if (encryption != "auto") builder.addQueryParameter("flow", encryption)
+        builder.addQueryParameter("encryption", vlessEncryption.orEmpty().ifBlank { "none" })
+        if (encryption.isNotBlank() && encryption != "auto") builder.addQueryParameter("flow", encryption)
         if (usesFinalMask()) builder.addQueryParameter("fm", finalMask)
     }
 
+    val exportedSecurity = when {
+        security == "reality" || realityPubKey.isNotBlank() -> "reality"
+        security.isNotBlank() -> security
+        else -> "none"
+    }
+
     when (type) {
-        "tcp" -> {}
-        "ws", "http", "httpupgrade" -> {
+        "tcp" -> {
+            if (headerType == "http") {
+                builder.addQueryParameter("headerType", "http")
+                if (host.isNotBlank()) builder.addQueryParameter("host", host)
+                if (path.isNotBlank()) builder.addQueryParameter("path", path)
+            }
+        }
+
+        "ws", "http", "httpupgrade", "xhttp" -> {
             if (host.isNotBlank()) {
                 builder.addQueryParameter("host", host)
             }
@@ -477,6 +540,9 @@ fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
             } else if (type == "http" && !isTLS()) {
                 builder.setQueryParameter("type", "tcp")
                 builder.addQueryParameter("headerType", "http")
+            } else if (type == "xhttp") {
+                if (!xhttpMode.isNullOrBlank()) builder.addQueryParameter("mode", xhttpMode)
+                if (!xhttpExtra.isNullOrBlank()) builder.addQueryParameter("extra", xhttpExtra)
             }
         }
 
@@ -487,10 +553,10 @@ fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
         }
     }
 
-    if (security.isNotBlank() && security != "none") {
-        builder.addQueryParameter("security", security)
-        when (security) {
-            "tls" -> {
+    if (exportedSecurity != "none") {
+        builder.addQueryParameter("security", exportedSecurity)
+        when (exportedSecurity) {
+            "tls", "reality" -> {
                 if (sni.isNotBlank()) {
                     builder.addQueryParameter("sni", sni)
                 }
@@ -506,10 +572,13 @@ fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
                 if (utlsFingerprint.isNotBlank()) {
                     builder.addQueryParameter("fp", utlsFingerprint)
                 }
-                if (realityPubKey.isNotBlank()) {
-                    builder.setQueryParameter("security", "reality")
-                    builder.addQueryParameter("pbk", realityPubKey)
-                    builder.addQueryParameter("sid", realityShortId)
+                if (exportedSecurity == "reality") {
+                    builder.addQueryParameter("pbk", realityPubKey.orEmpty())
+                    builder.addQueryParameter("sid", realityShortId.orEmpty())
+                    if (!spiderX.isNullOrBlank()) builder.addQueryParameter("spx", spiderX)
+                    if (!mldsa65Verify.isNullOrBlank()) {
+                        builder.addQueryParameter("mldsa65Verify", mldsa65Verify)
+                    }
                 }
             }
         }
@@ -535,8 +604,20 @@ fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
 fun buildSingBoxOutboundStreamSettings(bean: StandardV2RayBean): V2RayTransportOptions? {
     when (bean.type) {
         "tcp" -> {
+            // Raw TCP with the legacy HTTP request header obfuscation maps onto
+            // sing-box's HTTP transport, which uses HTTP/1.1 whenever TLS is off.
+            if (bean.headerType == "http") {
+                return V2RayTransportOptions_HTTPOptions().apply {
+                    type = "http"
+                    method = "GET"
+                    if (bean.host.isNotBlank()) host = bean.host.split(",")
+                    path = bean.path.takeIf { it.isNotBlank() } ?: "/"
+                }
+            }
             return null
         }
+
+        "xhttp" -> throw IllegalStateException("XHTTP must run on the bundled Xray core")
 
         "ws" -> {
             return V2RayTransportOptions_WebsocketOptions().apply {
@@ -602,7 +683,7 @@ fun buildSingBoxOutboundStreamSettings(bean: StandardV2RayBean): V2RayTransportO
 }
 
 fun buildSingBoxOutboundTLS(bean: StandardV2RayBean): OutboundTLSOptions? {
-    if (bean.security != "tls") return null
+    if (bean.security != "tls" && bean.security != "reality") return null
     return OutboundTLSOptions().apply {
         enabled = true
         insecure = bean.allowInsecure || DataStore.globalAllowInsecure
@@ -610,7 +691,7 @@ fun buildSingBoxOutboundTLS(bean: StandardV2RayBean): OutboundTLSOptions? {
         if (bean.alpn.isNotBlank()) alpn = bean.alpn.listByLineOrComma()
         if (bean.certificates.isNotBlank()) certificate = bean.certificates
         var fp = bean.utlsFingerprint
-        if (bean.realityPubKey.isNotBlank()) {
+        if (bean.security == "reality" || bean.realityPubKey.isNotBlank()) {
             reality = OutboundRealityOptions().apply {
                 enabled = true
                 public_key = bean.realityPubKey

@@ -303,7 +303,7 @@ data class ProxyEntity(
 
                             is VMessBean -> {
                                 append("\n\n")
-                                append(bean.buildXrayFinalMaskConfig(port))
+                                append(bean.buildXrayVlessConfig(port))
                             }
 
                             is NaiveBean -> {
@@ -324,7 +324,7 @@ data class ProxyEntity(
 
     fun needExternal(): Boolean {
         return when (type) {
-            TYPE_VMESS -> vmessBean!!.usesFinalMask()
+            TYPE_VMESS -> vmessBean!!.usesXrayBackend()
             TYPE_TROJAN_GO -> true
             TYPE_SNELL -> true
             TYPE_MIERU -> true

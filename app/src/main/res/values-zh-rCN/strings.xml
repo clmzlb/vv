@@ -189,6 +189,13 @@
     <string name="http_path">HTTP 路径</string>
     <string name="show_bottom_bar">像 SagerNet 一样显示底栏</string>
     <string name="utls_fingerprint">uTLS 指纹</string>
+    <string name="vless_encryption">VLESS 加密</string>
+    <string name="tcp_header_type">TCP 头部伪装</string>
+    <string name="xhttp_mode">XHTTP 模式</string>
+    <string name="xhttp_extra">XHTTP extra（JSON）</string>
+    <string name="spider_x">SpiderX</string>
+    <string name="mldsa65_verify">ML-DSA-65 验证</string>
+    <string name="xray_backend_summary">由内置 Xray 内核运行</string>
     <string name="grpc_service_name">gRPC 服务名称</string>
     <string name="alpn">应用层协议协商</string>
     <string name="group_duplicate">重复:

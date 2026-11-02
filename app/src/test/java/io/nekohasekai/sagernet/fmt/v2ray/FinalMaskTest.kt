@@ -75,7 +75,7 @@ class FinalMaskTest {
 
     @Test fun configUsesProtectedLoopbackMappingAndCarriesUdp() {
         val bean = parseV2Ray(link()).apply { finalAddress = "127.0.0.1"; finalPort = 23456 }
-        val config = JsonParser.parseString(bean.buildXrayFinalMaskConfig(34567)).asJsonObject
+        val config = JsonParser.parseString(bean.buildXrayVlessConfig(34567)).asJsonObject
         val inbound = config["inbounds"].asJsonArray.single().asJsonObject
         assertEquals("127.0.0.1", inbound["listen"].asString)
         assertEquals(34567, inbound["port"].asInt)
@@ -93,7 +93,7 @@ class FinalMaskTest {
             serverAddress = "node.example"; finalAddress = "127.0.0.1"; finalPort = 23456
             security = "tls"; sni = ""; alpn = "h2,http/1.1"
         }
-        fun stream() = JsonParser.parseString(bean.buildXrayFinalMaskConfig(34567)).asJsonObject["outbounds"]
+        fun stream() = JsonParser.parseString(bean.buildXrayVlessConfig(34567)).asJsonObject["outbounds"]
             .asJsonArray.single().asJsonObject["streamSettings"].asJsonObject
         assertEquals("node.example", stream()["tlsSettings"].asJsonObject["serverName"].asString)
         bean.realityPubKey = "test"; bean.realityShortId = "00"
@@ -106,12 +106,12 @@ class FinalMaskTest {
             serverAddress = "node.example"; finalAddress = "127.0.0.1"; finalPort = 23456
             security = "tls"; sni = "node.example"
         }
-        fun tls() = JsonParser.parseString(bean.buildXrayFinalMaskConfig(34567)).asJsonObject["outbounds"]
+        fun tls() = JsonParser.parseString(bean.buildXrayVlessConfig(34567)).asJsonObject["outbounds"]
             .asJsonArray.single().asJsonObject["streamSettings"].asJsonObject["tlsSettings"].asJsonObject
         // Xray 26.10 rejects "allowInsecure" as a removed feature.
         assertFalse(tls().has("allowInsecure"))
         bean.allowInsecure = true
-        assertThrows(IllegalArgumentException::class.java) { bean.buildXrayFinalMaskConfig(34567) }
+        assertThrows(IllegalArgumentException::class.java) { bean.buildXrayVlessConfig(34567) }
     }
 
     @Test fun rejectsUnsupportedMasksAndTransportsInsteadOfDowngrading() {
@@ -126,6 +126,6 @@ class FinalMaskTest {
         assertThrows(IllegalArgumentException::class.java) { parseV2Ray(link().replace("#Sudoku", "&fm=%7B%7D")) }
         assertThrows(IllegalArgumentException::class.java) { parseV2Ray(link().replace("encryption=none", "encryption=unsupported")) }
         val bean = parseV2Ray(link()).apply { enableMux = true }
-        assertThrows(IllegalArgumentException::class.java) { bean.buildXrayFinalMaskConfig(34567) }
+        assertThrows(IllegalArgumentException::class.java) { bean.buildXrayVlessConfig(34567) }
     }
 }

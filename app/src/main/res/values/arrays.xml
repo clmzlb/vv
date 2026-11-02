@@ -264,6 +264,7 @@
         <item>quic</item>
         <item>grpc</item>
         <item>httpupgrade</item>
+        <item>xhttp</item>
     </string-array>
 
     <string-array name="trojan_go_networks_entry">
@@ -303,6 +304,19 @@
     <string-array name="transport_layer_encryption_value">
         <item>none</item>
         <item>tls</item>
+        <item>reality</item>
+    </string-array>
+
+    <string-array name="tcp_header_type_value" translatable="false">
+        <item>none</item>
+        <item>http</item>
+    </string-array>
+
+    <string-array name="xhttp_mode_value" translatable="false">
+        <item>auto</item>
+        <item>packet-up</item>
+        <item>stream-up</item>
+        <item>stream-one</item>
     </string-array>
 
     <string-array name="notification_entry">
