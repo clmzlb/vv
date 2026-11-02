@@ -33,9 +33,11 @@ listener and reaches the server through sing-box's existing mapping inbound, so
 the server address is never exposed to an unprotected socket.
 
 The Xray path rejects combinations Xray 26.10 cannot build: `allowInsecure`,
-ECH, sing-box multiplexing, non-default packet encoding, and the removed `http`
-(h2) / `quic` transports. REALITY over the Xray path is limited to `tcp`,
-`xhttp` and `grpc`, matching Xray itself.
+ECH, and the removed `http` (h2) / `quic` transports. Multiplexing is passed to
+Xray as its own `mux` block; packet encoding is a sing-box knob and is simply
+left unexpressed (Xray always relays UDP as XUDP). REALITY over the Xray path is
+limited to `tcp`, `xhttp` and `grpc`, matching Xray itself, and XTLS Vision
+cannot be combined with multiplexing.
 
 ## Links
 
