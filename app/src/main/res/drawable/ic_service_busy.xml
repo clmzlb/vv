@@ -4,8 +4,14 @@
         android:viewportWidth="24"
         android:viewportHeight="24">
 
+    <!-- Same V as ic_service_active; the name "path" is what ic_service_connected and
+         ic_service_stopping animate, so it has to stay. The mark is stroked, hence
+         those animations drive strokeAlpha rather than fillAlpha. -->
     <path
         android:name="path"
-        android:fillColor="#fff"
-        android:pathData="M 12 3 L 2 21 L 6 21 L 8 17 L 16 17 L 18 21 L 22 21 Z M 12 8 L 14 13 L 10 13 Z" />
+        android:pathData="M6.8,6.4 L12,17.8 L17.2,6.4"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="3.2" />
 </vector>

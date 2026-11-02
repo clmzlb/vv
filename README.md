@@ -1,6 +1,6 @@
 # ArcaenBox for Android
 
-<img src="app/src/main/res/drawable-nodpi/arcaenbox_artwork.png" alt="ArcaenBox" width="128" />
+<img src="docs/icon.png" alt="ArcaenBox" width="128" />
 
 [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
 [![Releases](https://img.shields.io/github/v/release/clmzlb/vv)](https://github.com/clmzlb/vv/releases)

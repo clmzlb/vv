@@ -6,7 +6,7 @@
     <target android:name="path">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:propertyName="fillAlpha"
+                android:propertyName="strokeAlpha"
                 android:duration="@android:integer/config_mediumAnimTime"
                 android:valueFrom="0.55"
                 android:valueTo="1.0"

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- In-app counterpart of the launcher mark, used by the About header and the
+         drawer. A launcher only shows the central 72dp of the 108dp adaptive canvas,
+         so this canvas is that cropped box scaled by 1.5: same V, same two arms, edge
+         to edge like the icon users actually see. Keep it in sync with
+         drawable/ic_launcher_foreground.xml; docs/icon.png is rendered from these
+         numbers by buildScript/tools/gen_launcher_icon.py. -->
+    <path
+        android:fillColor="#36656F"
+        android:pathData="M21.6,0 L86.4,0 A21.6,21.6 0 0 1 108,21.6 L108,86.4 A21.6,21.6 0 0 1 86.4,108 L21.6,108 A21.6,21.6 0 0 1 0,86.4 L0,21.6 A21.6,21.6 0 0 1 21.6,0 Z" />
+
+    <!-- Right arm first; the white left arm closes over the joint. -->
+    <path
+        android:pathData="M54,84 L80.25,28.5"
+        android:strokeColor="#C6E2E8"
+        android:strokeLineCap="round"
+        android:strokeWidth="19.5" />
+    <path
+        android:pathData="M27.75,28.5 L54,84"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="19.5" />
+</vector>

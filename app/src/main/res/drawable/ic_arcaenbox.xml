@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/arcaenbox_artwork"
-    android:filter="true"
-    android:gravity="fill" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- List-row silhouette of the mark. MaterialAbout tints this ImageView with
+         ?colorOnSurface, so it must stay a single-colour glyph; the stroke colour here
+         only matters if the drawable is ever used untinted. -->
+    <path
+        android:pathData="M6.8,6.4 L12,17.8 L17.2,6.4"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="3.2" />
+</vector>
