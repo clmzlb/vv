@@ -1,8 +1,9 @@
 """Verify every user-facing brand mark in a release APK.
 
 Four surfaces have to agree: the adaptive launcher icon, its legacy bitmaps, the
-in-app mark (About header / drawer) and the status-bar glyph. All of them are the V
-monogram, and none of them may fall back to a raster.
+in-app mark (About header / drawer) and the status-bar glyph. The launcher and the
+in-app mark are the V inside a rounded frame; the status-bar glyph stays a bare V so
+it reads at 24dp. None of them may fall back to a raster.
 """
 import os
 import re
@@ -57,15 +58,31 @@ assert not stray, f'Raster art must not ship inside res/: {stray}'
 # --- in-app mark: vector twin of the launcher, same V, edge to edge ------------------
 artwork = read('drawable/arcaenbox_artwork.xml')
 assert '<bitmap' not in artwork, 'The in-app mark must stay a vector'
-assert 'fillColor="#36656F"' in artwork, 'The in-app mark lost its teal tile'
+assert 'fillColor="#0F3A44"' in artwork, 'The in-app mark lost its deep teal tile'
 apex, left, _ = v_geometry(artwork, 'arcaenbox_artwork')
-assert 'strokeColor="#FFFFFF"' in foreground and 'strokeColor="#C6E2E8"' in foreground, \
-    'Launcher and in-app mark no longer share the two-tone arms'
+
+
+def stroke_colours(vector):
+    return set(re.findall(r'android:strokeColor="(#[0-9A-Fa-f]{6,8})"', vector))
+
+
+assert stroke_colours(foreground) == stroke_colours(artwork) == {'#4F9593', '#FFFFFF', '#9FE0D6'}, \
+    'Launcher and in-app mark no longer share the frame and the two-tone arms'
+assert 'A15,15' in foreground and 'A22.5,22.5' in artwork, 'The rounded frame went missing'
 
 
 def stroke_width(vector):
-    values = {float(v) for v in re.findall(r'android:strokeWidth="([\d.]+)"', vector)}
-    assert len(values) == 1, f'Expected one stroke width, found {values}'
+    """Width of the two V arms only; the surrounding frame is thinner on purpose."""
+    values = set()
+    for block in re.findall(r'<path\b[^>]*?/>', vector, re.S):
+        data = re.search(r'android:pathData="([^"]+)"', block)
+        if not data or not re.fullmatch(
+                r'M\s*[\d.]+\s*,\s*[\d.]+\s*L\s*[\d.]+\s*,\s*[\d.]+\s*', data.group(1)):
+            continue
+        width = re.search(r'android:strokeWidth="([\d.]+)"', block)
+        assert width, 'An arm lost its stroke width'
+        values.add(float(width.group(1)))
+    assert len(values) == 1, f'Expected one arm stroke width, found {values}'
     return values.pop()
 
 
