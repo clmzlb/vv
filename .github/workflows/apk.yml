@@ -212,7 +212,7 @@ jobs:
         run: |
           set -euo pipefail
           cat > /tmp/release-notes.md <<'EOF'
-          ArcaenBox for Android. Default primary color: #DCEEF1.
+          Vbox for Android. Default primary color: #DCEEF1.
 
           Package: `com.vv.android`.
 
@@ -226,4 +226,4 @@ jobs:
           Signed release APKs for arm64-v8a, armeabi-v7a, x86, and x86_64.
           EOF
           sed -i 's/^ \{10\}//' /tmp/release-notes.md
-          gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "ArcaenBox $RELEASE_TAG" --notes-file /tmp/release-notes.md
+          gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "Vbox $RELEASE_TAG" --notes-file /tmp/release-notes.md
