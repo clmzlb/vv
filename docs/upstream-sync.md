@@ -1,6 +1,6 @@
 # 上游组件同步
 
-`ArcaenBox Upstream Sync` 每天检查内置协议组件的上游发布。发现新版本后，它会更新
+`ArcaenBox Upstream Sync` 由维护者手动触发，检查内置协议组件的上游发布。发现新版本后，它会更新
 `buildScript/builtins/versions.json` 中的版本、下载地址与 SHA-256，递增该渠道的
 `revision`，重新编译四种架构并发布签名组件包。已经安装应用的用户可以在
 「内核管理」中直接更新，无需等待新的 APK。
@@ -8,7 +8,7 @@
 工作流文件：`.github/workflows/sync-upstreams.yml`
 同步脚本：`.github/scripts/sync_upstreams.py`
 
-## 自动同步的组件
+## 可自动同步的组件
 
 | 组件 | 上游 | 版本来源 | 产物 |
 | --- | --- | --- | --- |
@@ -36,8 +36,8 @@
 
 1. **探测**：读取每个上游的最新版本、资产列表与发布时间，与锁定值逐字段比较（版本、
    下载地址、哈希、提交、Go 工具链）。
-2. **观察期**：自动更新默认等待 24 小时。刚发布的版本先标记为「观察期」，下一次定时运行
-   才会同步，避免把发布几分钟内的坏包推给用户。手动运行可传 `min_age_hours=0` 跳过。
+2. **观察期**：默认等待上游发布满 24 小时才允许改写。刚发布的版本会标记为「观察期」并
+   跳过，避免把发布几分钟内的坏包推给用户。确认要立即同步时，把 `min_age_hours` 设为 `0`。
 3. **改写**：只修改确实变化的组件，递增对应 `revision`，并同步
    `docs/built-in-protocols.md`（以及 Xray、Mieru 相关文档里的版本号）。
 4. **构建**：`package_builtins.py` 下载并校验 SHA-256、ELF 架构与 PIE 格式；Mieru 与
@@ -57,12 +57,10 @@
 Snell 的两个渠道共用 `snell` 这个组件名：`snell` 对应 `snell:stable`，`snell-preview`
 对应 `snell:preview`。工作流按修订号后缀选择渠道，因此不会把测试渠道的字节发到正式渠道。
 
-> GitHub 会在仓库连续 60 天没有活动后暂停定时工作流。收到提示时在 Actions 页面重新启用，
-> 或手动运行一次即可恢复。
+## 运行方式
 
-## 手动运行
-
-在 Actions 中选择 **ArcaenBox Upstream Sync** → Run workflow：
+工作流只保留 `workflow_dispatch`，不会按时间自动运行。在 Actions 中选择
+**ArcaenBox Upstream Sync** → **Run workflow**，选好分支后填写输入：
 
 | 输入 | 说明 |
 | --- | --- |

@@ -1,8 +1,6 @@
 name: ArcaenBox Upstream Sync
 on:
-  schedule:
-    # Daily at 03:17 UTC (11:17 Beijing); offset from the top of the hour on purpose.
-    - cron: '17 3 * * *'
+  # Manual only: a maintainer starts the run after reviewing the upstream release.
   workflow_dispatch:
     inputs:
       publish:
@@ -126,7 +124,7 @@ jobs:
           if-no-files-found: error
       - name: Commit the new pins
         id: commit
-        if: steps.apply.outputs.publish != '' && (github.event_name == 'schedule' || inputs.publish)
+        if: steps.apply.outputs.publish != '' && inputs.publish
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -164,7 +162,7 @@ jobs:
               --target "$TARGET" --component "$component" --channel "$channel"
           done
       - name: Dry-run notice
-        if: github.event_name == 'workflow_dispatch' && !inputs.publish
+        if: '!inputs.publish'
         run: |
           printf '> Dry run: pins were not committed and no component channel was published.\n' >> "$GITHUB_STEP_SUMMARY"
       - name: Sum the sync up
