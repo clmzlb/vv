@@ -8,6 +8,9 @@
 工作流文件：`.github/workflows/sync-upstreams.yml`
 同步脚本：`.github/scripts/sync_upstreams.py`
 
+成功发布时不保留组件产物——签名包已经在组件发布里。仓库是私有库，Actions 产物配额有限，
+因此工作流产物只保留 1–3 天，历史占用需要在 Actions 页面或 API 中清理。
+
 ## 可自动同步的组件
 
 | 组件 | 上游 | 版本来源 | 产物 |
@@ -64,7 +67,7 @@ Snell 的两个渠道共用 `snell` 这个组件名：`snell` 对应 `snell:stab
 
 | 输入 | 说明 |
 | --- | --- |
-| `publish` | 构建成功后是否提交固定版本并发布签名组件包。关闭时只构建并上传 `NativeComponentUpdates` 产物供检查，`main` 与渠道发布都不改动 |
+| `publish` | 构建成功后是否提交固定版本并发布签名组件包。关闭时只构建并上传 `NativeComponentUpdates` 产物（保留 1 天）供检查，`main` 与渠道发布都不改动 |
 | `components` | 可选，逗号分隔的组件 id：`naive,snell,trojan-go,mieru,xray,snell-preview`；留空检查全部 |
 | `min_age_hours` | 上游发布后等待多少小时才同步，默认 `24` |
 
@@ -93,7 +96,7 @@ python3 .github/scripts/sync_upstreams.py --self-test   # 离线自检
 
 - **探测失败**：运行摘要列出失败组件，工作流失败且不写入任何内容。
 - **构建失败**：工作区里的新固定版本不会提交，`main` 保持可用。
-- **发布失败**：固定版本已提交，`NativeComponentUpdates` 产物已上传。可在
+- **发布失败**：固定版本已提交，失败时会自动上传 `NativeComponentUpdates` 产物（保留 1 天）。可在
   **ArcaenBox Native Components** 中填入本次运行 ID 与 `source_run`，重新发布同一份签名包，
   无需重新构建。补齐发布之前不要用该提交构建新的 APK，否则内置清单会引用尚不存在的
   组件发布。

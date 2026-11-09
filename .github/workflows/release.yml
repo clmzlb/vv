@@ -83,6 +83,7 @@ jobs:
         with:
           name: ArcaenBox-APKs
           path: ${{ env.APK }}
+          retention-days: 1
   publish:
     name: Publish Release
     if: github.event.inputs.publish != 'y'

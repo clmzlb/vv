@@ -61,3 +61,4 @@ jobs:
           name: ArcaenBox-UI-verification
           path: ui-smoke/
           if-no-files-found: warn
+          retention-days: 2

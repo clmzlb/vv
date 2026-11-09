@@ -22,6 +22,10 @@ on:
         description: Also build an isolated older-version QA APK for testing the in-app updater
         type: boolean
         default: false
+      upload_builtins:
+        description: Also upload NativeComponentUpdates for reuse or publishing (about 200 MB of artifact storage)
+        type: boolean
+        default: false
       publish:
         description: Publish the verified APKs as a release
         type: boolean
@@ -138,11 +142,13 @@ jobs:
           name: ArcaenBox-APKs
           path: dist/*
           if-no-files-found: error
+          retention-days: 1
       - uses: actions/upload-artifact@v4
         with:
           name: ArcaenBox-Core-Updates
           path: core-build/dist/
           if-no-files-found: error
+          retention-days: 1
       - uses: actions/upload-artifact@v4
         with:
           name: ArcaenBox-build-provenance
@@ -152,13 +158,15 @@ jobs:
             app/src/main/assets/builtins/manifest.json
             buildScript/builtins/versions.json
           if-no-files-found: error
+          retention-days: 3
       - name: Upload native component updates
-        if: always()
+        if: always() && inputs.upload_builtins
         uses: actions/upload-artifact@v4
         with:
           name: NativeComponentUpdates
           path: core-build/component-updates/
-          if-no-files-found: error
+          if-no-files-found: warn
+          retention-days: 1
       - name: Enable emulator acceleration
         run: sudo chmod a+rw /dev/kvm
       - name: Build older-version updater QA fixture
@@ -175,6 +183,7 @@ jobs:
           name: ArcaenBox-updater-QA-fixture
           path: updater-fixture/
           if-no-files-found: error
+          retention-days: 1
       - name: Verify Material 3 screens on Android 15
         uses: reactivecircus/android-emulator-runner@v2
         env:
@@ -194,6 +203,7 @@ jobs:
           name: ArcaenBox-UI-verification
           path: ui-smoke/
           if-no-files-found: warn
+          retention-days: 2
       - name: Upload failed-build diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
@@ -204,6 +214,7 @@ jobs:
             app/build/test-results/
             app/schemas/
           if-no-files-found: warn
+          retention-days: 1
       - name: Publish APKs
         if: success() && inputs.publish
         env:

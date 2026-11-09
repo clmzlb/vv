@@ -37,4 +37,4 @@ python3 .github/scripts/package_builtins.py
 
 ## 仅更新应用界面时复用内核
 
-Signed APK 工作流的可选 `builtins_run` 可以指定已有 `NativeComponentUpdates` 产物。构建会验证每份清单的 RSA 签名、锁定版本、渠道、修订号、四种架构、ELF 类型、长度与 SHA-256，然后使用相同字节打包。更改内核来源或适配器代码时应留空并重新构建内核，递增对应修订号；该输入用于内核源码未变的应用更新。
+Signed APK 工作流的可选 `builtins_run` 可以指定已有 `NativeComponentUpdates` 产物（该产物默认不再上传，构建时需勾选 `upload_builtins`，只保留 1 天）。构建会验证每份清单的 RSA 签名、锁定版本、渠道、修订号、四种架构、ELF 类型、长度与 SHA-256，然后使用相同字节打包。更改内核来源或适配器代码时应留空并重新构建内核，递增对应修订号；该输入用于内核源码未变的应用更新。

@@ -116,12 +116,6 @@ jobs:
           test -n "$SIGNING_KEYSTORE"
           printf '%s' "$SIGNING_KEYSTORE" | base64 --decode > release.keystore
           python3 .github/scripts/package_components.py --keystore release.keystore
-      - uses: actions/upload-artifact@v4
-        if: steps.apply.outputs.publish != ''
-        with:
-          name: NativeComponentUpdates
-          path: core-build/component-updates
-          if-no-files-found: error
       - name: Commit the new pins
         id: commit
         if: steps.apply.outputs.publish != '' && inputs.publish
@@ -161,6 +155,14 @@ jobs:
             python3 .github/scripts/publish_components.py \
               --target "$TARGET" --component "$component" --channel "$channel"
           done
+      - name: Keep the packages for a dry run or a failed publish
+        if: steps.apply.outputs.publish != '' && (failure() || !inputs.publish)
+        uses: actions/upload-artifact@v4
+        with:
+          name: NativeComponentUpdates
+          path: core-build/component-updates
+          if-no-files-found: warn
+          retention-days: 1
       - name: Dry-run notice
         if: '!inputs.publish'
         run: |

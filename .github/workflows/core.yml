@@ -49,3 +49,4 @@ jobs:
             libcore/libcore.aar
             libcore/libcore-sources.jar
           if-no-files-found: error
+          retention-days: 2

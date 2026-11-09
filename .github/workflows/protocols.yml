@@ -65,3 +65,4 @@ jobs:
           name: ArcaenBox-protocol-verification
           path: protocol-smoke/
           if-no-files-found: warn
+          retention-days: 2
