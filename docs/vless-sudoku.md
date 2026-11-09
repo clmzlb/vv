@@ -8,7 +8,7 @@ From 1.7.5, import a `vless://` link with its URL-encoded `fm` JSON parameter. T
 
 The VLESS UUID and Sudoku password are separate credentials and must both match the server. TCP (`type=tcp` or `type=raw`) with one Sudoku mask is supported. The JSON is retained in saved profiles, clones, backups and exported links, including optional `customTable` / `customTables`. Invalid or unsupported masks are rejected, rather than imported as ordinary VLESS.
 
-These nodes use a pinned, bundled Xray 26.10.31 executable. The executable exposes a loopback SOCKS listener; sing-box retains routing, DNS, VPN socket protection and chain mapping. UDP payloads use VLESS over the TCP Sudoku connection. Ordinary VLESS/VMess continues to use sing-box. No server-side forwarding or separate Android plugin is needed.
+These nodes use a pinned, bundled Xray 26.11.9 executable. The executable exposes a loopback SOCKS listener; sing-box retains routing, DNS, VPN socket protection and chain mapping. UDP payloads use VLESS over the TCP Sudoku connection. Ordinary VLESS/VMess continues to use sing-box. No server-side forwarding or separate Android plugin is needed.
 
 TLS and REALITY retain the original server name when the server connection is mapped locally. ECH, sing-box multiplexing and non-default packet encoding cannot be combined with this path; validation reports those combinations. This feature does not imply support for other FinalMask masks or other Xray transports.
 

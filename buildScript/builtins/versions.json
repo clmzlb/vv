@@ -88,13 +88,13 @@
   },
   "xray": {
     "name": "Xray",
-    "version": "26.10.31",
+    "version": "26.11.9",
     "library": "libxray.so",
-    "source": "https://github.com/XTLS/Xray-core/tree/a4a3dff5b20c2faae567b742c172c7b95e75c083",
+    "source": "https://github.com/XTLS/Xray-core/tree/676eaf66f8f05d4d558ee7a74b4736623d3feeb9",
     "license": "MPL-2.0",
-    "commit": "a4a3dff5b20c2faae567b742c172c7b95e75c083",
-    "url": "https://codeload.github.com/XTLS/Xray-core/tar.gz/a4a3dff5b20c2faae567b742c172c7b95e75c083",
-    "sha256": "7dba1dd055bdc854a2c5311610872c9bf6315ddb0a741fb8c2206212cec51b53",
+    "commit": "676eaf66f8f05d4d558ee7a74b4736623d3feeb9",
+    "url": "https://codeload.github.com/XTLS/Xray-core/tar.gz/676eaf66f8f05d4d558ee7a74b4736623d3feeb9",
+    "sha256": "adccbbb35f9efccae0884bfd46b9d439daee60aa543efa19e775799c74589bab",
     "toolchain": "go1.27.3"
   },
   "snell_preview": {
@@ -108,7 +108,7 @@
     "trojan-go:stable": 1,
     "naive:stable": 2,
     "mieru:stable": 2,
-    "xray:stable": 2,
+    "xray:stable": 3,
     "snell:stable": 2,
     "snell:preview": 1
   }
